@@ -12,7 +12,7 @@ const RectangleCard = ({genre, imgSrc}) => {
         loading="lazy"
         src={imgSrc}
         alt="card image"
-        className="absolute right-0 bottom-0 w-24 h-auto rotate-[28deg] z-0 rounded-md"
+        className="absolute -right-6 -bottom-8 w-36 h-auto rotate-[28deg] z-0 rounded-[4px]"
       />
     </div>
   );
