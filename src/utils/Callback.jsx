@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Callback() {
@@ -10,9 +9,6 @@ function Callback() {
   const TOKEN_REFRESH_INTERVAL = 50 * 60 * 1000; // 50 minutes in milliseconds
 
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [searchKey, setSearchKey] = useState("");
-  const [artists, setArtists] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,52 +29,24 @@ function Callback() {
     setToken(_token);
 
     if (_token) {
-      navigate("/"); // 홈으로 리디렉션
+      navigate("/"); // 아티스트 검색 페이지로 리디렉션
     }
   }, [navigate]);
 
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
-        // 새로고침을 위해 간단히 페이지를 다시 로드
         window.location.href = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`;
       }, TOKEN_REFRESH_INTERVAL);
 
-      return () => clearInterval(interval); // 컴포넌트가 언마운트 될 때 인터벌 클리어
+      return () => clearInterval(interval);
     }
   }, [token]);
 
   const logout = () => {
     setToken("");
     localStorage.removeItem("token");
-  };
-
-  const searchArtists = async (e) => {
-    e.preventDefault();
-    const { data } = await axios.get("https://api.spotify.com/v1/search", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        q: searchKey,
-        type: "artist",
-      },
-    });
-
-    setArtists(data.artists.items);
-  };
-
-  const renderArtists = () => {
-    return artists.map((artist) => (
-      <div key={artist.id}>
-        {artist.images.length ? (
-          <img width={"100%"} src={artist.images[0].url} alt="" />
-        ) : (
-          <div>No Image</div>
-        )}
-        {artist.name}
-      </div>
-    ));
+    navigate("/"); // 로그아웃 후 홈으로 돌아가기
   };
 
   return (
@@ -97,17 +65,6 @@ function Callback() {
             Logout
           </button>
         )}
-
-        {token ? (
-          <form onSubmit={searchArtists}>
-            <input type="text" onChange={(e) => setSearchKey(e.target.value)} />
-            <button type={"submit"}>Search</button>
-          </form>
-        ) : (
-          <h2 className="text-white">Please login</h2>
-        )}
-
-        {renderArtists()}
       </header>
     </div>
   );

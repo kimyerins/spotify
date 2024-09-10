@@ -1,36 +1,28 @@
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-function useArtistSearch(token) {
-  const [searchKey, setSearchKey] = useState("");
-  const [artists, setArtists] = useState([]);
+const fetchArtists = async (token, searchKey) => {
+  if (!token || !searchKey) {
+    throw new Error("Token or search key is missing!");
+  }
 
-  const searchArtists = async (e) => {
-    e.preventDefault();
-    if (!token) return;
+  const { data } = await axios.get("https://api.spotify.com/v1/search", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      q: searchKey,
+      type: "artist",
+    },
+  });
 
-    try {
-      const { data } = await axios.get("https://api.spotify.com/v1/search", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          q: searchKey,
-          type: "artist",
-        },
-      });
-      setArtists(data.artists.items);
-    } catch (error) {
-      console.error("Error fetching artists:", error);
-    }
-  };
+  return data.artists.items;
+};
 
-  return {
-    searchKey,
-    setSearchKey,
-    artists,
-    searchArtists,
-  };
-}
-
-export default useArtistSearch;
+export const useArtistSearchQuery = (token, searchKey) => {
+  return useQuery({
+    queryKey: ["artist-search", searchKey],
+    queryFn: () => fetchArtists(token, searchKey),
+    select: (result) => result,
+  });
+};
