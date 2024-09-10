@@ -12,13 +12,13 @@ function App() {
   return (
     <>
       <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<HomePage />} />
-        <Route path="search" index element={<SearchPage />} />
-        <Route path="detail/:type/:id" element={<DetailPage />} />
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="search" index element={<SearchPage />} />
+          <Route path="detail/:type/:id" element={<DetailPage />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </>
   );
 }
