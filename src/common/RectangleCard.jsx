@@ -2,7 +2,7 @@ import React from 'react';
 
 const RectangleCard = ({genre, imgSrc}) => {
   return (
-    <div className="relative bg-[#3B82F6] text-white p-4 rounded-lg w-64 h-40 overflow-hidden m-3">
+    <div className="relative bg-[#3B82F6] text-white p-4 rounded-lg w-full aspect-video overflow-hidden">
       <span className="text-2xl font-bold absolute top-4 left-4 z-10">
         {genre}
       </span>
