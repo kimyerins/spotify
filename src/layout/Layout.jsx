@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import MyPlaylist from "./MyPlaylist.jsx";
 
 const Layout = () => {
   return (
-    <div>
-      <h2 className="text-3xl font-bold bg-black text-white">Layout</h2>
-      <Outlet />
+    <div className={'w-[100%] columns-3'}>
+        <MyPlaylist/>
+        <Outlet />
     </div>
   )
 }
