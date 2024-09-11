@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import Layout from "./layout/layout";
+import Layout from "./layout/Layout.jsx";
 import HomePage from "./pages/HomePage/HomePage";
 import SearchPage from "./pages/SearchPage/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
