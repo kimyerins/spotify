@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import SearchPage from "./pages/SearchPage/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import DetailPage from "./pages/DetailPage/DetailPage";
+import ArtistInfoPage from "./pages/DetailPage/ArtistInfoPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="callback" index element={<HomePage />} />
           <Route path="search" index element={<SearchPage />} />
           <Route path="detail/:type/:id" element={<DetailPage />} />
+          <Route path="detail/ArtistInfoPage" element={<ArtistInfoPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
