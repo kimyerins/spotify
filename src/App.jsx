@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
+          <Route path="callback" index element={<HomePage />} />
           <Route path="search" index element={<SearchPage />} />
           <Route path="detail/:type/:id" element={<DetailPage />} />
           <Route path="detail/ArtistInfoPage" element={<ArtistInfoPage />} />
