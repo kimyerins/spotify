@@ -6,7 +6,8 @@ import HomePage from "./pages/HomePage/HomePage";
 import SearchPage from "./pages/SearchPage/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import DetailPage from "./pages/DetailPage/DetailPage";
-import Callback from "./utils/Callback";
+import AlbumPage from "./pages/AlbumPage/AlbumPage";
+import ArtistInfoPage from "./pages/DetailPage/ArtistInfoPage";
 
 function App() {
   return (
@@ -14,9 +15,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
+          <Route path="callback" index element={<HomePage />} />
           <Route path="search" index element={<SearchPage />} />
           <Route path="detail/:type/:id" element={<DetailPage />} />
-          <Route path="callback" index element={<Callback />} />
+          <Route path="detail/ArtistInfoPage" element={<ArtistInfoPage />} />
+          <Route path="detail/album" element={<AlbumPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

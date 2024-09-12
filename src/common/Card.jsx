@@ -28,7 +28,7 @@ const Card = ({
         }}
       >
         <div className="flex justify-center items-center w-[157.5px] h-[157.5px] relative">
-          <div className="flex justify-center items-center overflow-hidden">
+          <div className="flex justify-center items-center overflow-hidden shadow-custom">
             <img
               src={imgUrl || defaultUrl}
               alt="card-img"
