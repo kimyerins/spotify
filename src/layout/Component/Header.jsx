@@ -91,7 +91,7 @@ const Header = () => {
             />
 
             <svg
-              className={`self-center w-6 h-6 hover:stroke-white pl-2 border-l-[1px] border-solid border-[#b3b3b3] ${
+              className={`self-center w-8 h-8 hover:stroke-white pl-2 border-l-[1px] border-solid border-[#b3b3b3] ${
                 isFocused ? "fill-white stroke-none" : ""
               }`}
               data-encore-id="icon"
