@@ -45,6 +45,7 @@ const ArtistInfoPage = () => {
                         <h2 className={'text-8xl font-extrabold'}>aespa</h2>
                         <div>월별 리스너 <span>10,710,907</span>명</div>
                     </div>
+                    
                     {/* 재생 버튼 바 */}
                     <div className={'p-4 flex items-center gap-4 bg-[#121212]'}>
                         <div>
