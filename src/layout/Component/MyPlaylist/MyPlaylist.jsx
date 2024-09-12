@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import useSpotifyToken from "../../hooks/useSpotifyToken.jsx";
-import {useFeaturedPlaylist} from "../../hooks/useFeaturedPlaylist.js";
+import {useUserPlaylist} from "../../hooks/useUserPlaylist.js";
 
 const MyPlaylist = () => {
 
@@ -13,8 +12,7 @@ const MyPlaylist = () => {
     const [myBtn, setMyBtn] = useState(false);
     const [hiddenCtrl, setHiddenCtrl] = useState(hidden);
     const [searchInputValue, setSearchInputValue] = useState('');
-    const {token} = useSpotifyToken();
-    const {data} = useFeaturedPlaylist(token)
+    const {data} = useUserPlaylist()
     console.log('data',data)
 
     const handleListBtn =()=>{
