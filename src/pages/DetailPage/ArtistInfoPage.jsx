@@ -147,22 +147,27 @@ const ArtistInfoPage = () => {
                             )}
                         </div>
                     </div>
+
                     {/* 인기 노래 리스트 */}
                     <div className={'p-4 bg-[#121212] h-80'}>
                         <h3 className={'text-2xl font-bold'}>인기</h3>
                     </div>
+
                     {/* 아티스트 추천 */}
                     <div className={'p-4 bg-[#121212] h-80'}>
                         <h3 className={'text-2xl font-bold'}>아티스트 추천</h3>
                     </div>
+
                     {/* 디스코그래피 */}
                     <div className={'p-4 bg-[#121212] h-80'}>
                         <h3 className={'text-2xl font-bold'}>디스코그래피</h3>
                     </div>
+
                     {/* 피처링 */}
                     <div className={'p-4 bg-[#121212] h-80'}>
                         <h3 className={'text-2xl font-bold'}>가수명 피처링</h3>
                     </div>
+                    
                     {/* 공연일정 */}
                     <div className={'p-4 bg-[#121212]'}>
                         <h3 className={'text-2xl font-bold'}>공연 일정</h3>
