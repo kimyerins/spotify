@@ -1,10 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import MyPlaylist from './Component/MyPlaylist';
-import Header from '../layout/Component/Header'; 
-
-
-function Layout() {
-  return (
+import Header from "./Component/Header";
+import MyPlaylist from "./Component/MyPlaylist/MyPlaylist.jsx";
+const Layout = () => {
+    return (
     <div>
       {/* 상단 헤더 */}
       <Header/>

@@ -6,12 +6,20 @@ import DetailPage from "./pages/DetailPage/DetailPage";
 import HomePage from "./pages/HomePage/HomePage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import SearchPage from "./pages/SearchPage/SearchPage";
+import {Provider} from "react-redux";
+import store from "./redux/store.jsx";
+import ProtectPage from "./layout/Component/ProtectPage.jsx";
 
 function App() {
   return (
     <>
+      <Provider store={store}>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={
+            <ProtectPage>
+            <Layout />
+            </ProtectPage>
+        }>
           <Route index element={<HomePage />} />
           <Route path="search" index element={<SearchPage />} />
           <Route path="detail/:type/:id" element={<DetailPage />} />
@@ -19,6 +27,7 @@ function App() {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Provider>
     </>
   );
 }
