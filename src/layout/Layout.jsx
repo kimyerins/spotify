@@ -1,9 +1,7 @@
 import { Outlet } from "react-router-dom";
-import MyPlaylist from "./Component/MyPlaylist";
-import Header from "../layout/Component/Header";
-import PlayerControl from "./Component/PlayerControl";
-
-function Layout() {
+import Header from "./Component/Header";
+import MyPlaylist from "./Component/MyPlaylist/MyPlaylist.jsx";
+const Layout = () => {
   return (
     <div>
       {/* 상단 헤더 */}
@@ -21,6 +19,6 @@ function Layout() {
       </div>
     </div>
   );
-}
+};
 
 export default Layout;
