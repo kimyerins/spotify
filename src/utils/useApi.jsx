@@ -9,6 +9,7 @@ const useApi = () => {
       Authorization: `Bearer ${token}`,
     },
   });
+  return api;
 };
 
 export default useApi;
