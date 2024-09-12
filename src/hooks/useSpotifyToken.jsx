@@ -1,0 +1,55 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const useSpotifyToken = () => {
+  const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
+  const SCOPES = "user-read-private user-read-email";
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("spotifyToken") || null;
+  });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const tokenFromUrl = hash
+        .split("&")
+        .find((elem) => elem.startsWith("#access_token"))
+        .split("=")[1];
+      if (tokenFromUrl) {
+        setToken(tokenFromUrl);
+        localStorage.setItem("spotifyToken", tokenFromUrl);
+        window.location.hash = "";
+        navigate("/");
+      } else {
+        console.error("토큰이 URL에서 발견되지 않음");
+      }
+    }
+  }, [navigate]);
+
+  const login = () => {
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
+      REDIRECT_URI
+    )}&scope=${encodeURIComponent(SCOPES)}`;
+    console.log("로그인 URL:", authUrl);
+    window.location.href = authUrl;
+  };
+
+  const clearToken = () => {
+    setToken(null);
+    localStorage.removeItem("spotifyToken");
+  };
+
+  useEffect(() => {
+    if (token) {
+      const interval = setInterval(() => {}, 50 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [token]);
+
+  return { token, login, clearToken };
+};
+
+export default useSpotifyToken;
