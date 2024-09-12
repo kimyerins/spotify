@@ -2,9 +2,9 @@ import React from "react";
 
 const AlbumBanner = () => {
   return (
-    <div className="relative flex justify-center items-center border rounded-md w-full flex-grow-1  ">
-      <div className="z-10 flex justify-center items-center border rounded-md w-full p-6">
-        <div className="z-10 flex gap-6 self-stretch w-full h-full border  ">
+    <div className="relative flex justify-center items-center  rounded-md w-full flex-grow-1  ">
+      <div className="z-10 flex justify-center items-center  rounded-md w-full p-6">
+        <div className="z-10 flex gap-6 self-stretch w-full h-full   ">
           <div
             className="rounded-md w-[232px] h-[232px] bg-cover shadow-custom"
             style={{
@@ -19,7 +19,7 @@ const AlbumBanner = () => {
             <div className="text-white">
               <h2 className="text-8xl py-4 font-black">GOLDEN</h2>
             </div>
-            <div className="flex gap-1 items-center">
+            <div className="flex gap-2 items-center">
               <div>
                 <img
                   width={32}
