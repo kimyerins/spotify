@@ -7,6 +7,7 @@ import SearchPage from "./pages/SearchPage/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import DetailPage from "./pages/DetailPage/DetailPage";
 import Callback from "./utils/Callback";
+import AlbumPage from "./pages/AlbumPage/AlbumPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="search" index element={<SearchPage />} />
           <Route path="detail/:type/:id" element={<DetailPage />} />
+          <Route path="album" element={<AlbumPage />} />
           <Route path="callback" index element={<Callback />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
