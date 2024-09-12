@@ -10,7 +10,7 @@ const userIdSlice = createSlice({
     initialState,
     reducers : {
         login(state,action){
-            state.id = action.payload.id;
+            state.id = action.payload;
             state.authenticate = true;
         },
         logout(state){

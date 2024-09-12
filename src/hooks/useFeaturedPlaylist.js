@@ -1,18 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../utils/useApi.jsx";
 
-const fetchFeaturedPlaylist = async (token) => {
+const fetchFeaturedPlaylist = async () => {
        return api.get("/browse/featured-playlists", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
 };
 
-export const useFeaturedPlaylist = (token) => {
+export const useFeaturedPlaylist = () => {
     return useQuery({
         queryKey: ["featured-playlist"],
-        queryFn: () => fetchFeaturedPlaylist(token),
-        select: (result) => result.data,
+        queryFn: () => fetchFeaturedPlaylist(),
+        select: (result) => result.data.playlists.items
     });
 };
