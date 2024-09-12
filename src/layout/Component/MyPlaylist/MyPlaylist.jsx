@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useUserPlaylist} from "../../../hooks/useUserPlaylist.js";
 import Playlist from "./Playlist.jsx";
+import {useSelector} from "react-redux";
 
 const MyPlaylist = () => {
 
@@ -13,7 +14,8 @@ const MyPlaylist = () => {
     const [myBtn, setMyBtn] = useState(false);
     const [hiddenCtrl, setHiddenCtrl] = useState(hidden);
     const [searchInputValue, setSearchInputValue] = useState('');
-    const {data} = useUserPlaylist()
+    const userId = useSelector((state)=>state.userInfo.user.id)
+    const {data} = useUserPlaylist(userId);
     console.log('data',data)
 
     const handleListBtn =()=>{

@@ -1,25 +1,19 @@
 import React, {useEffect} from "react";
 import Card from "../../common/Card";
 import {useDispatch, useSelector} from "react-redux";
-import {userIdActions} from "../../redux/reducer/userIdSlice.jsx";
-import {useUserId} from "../../hooks/useUserId.jsx";
+import {useUserInfo} from "../../hooks/useUserInfo.jsx";
+import {userInfoActions} from "../../redux/reducer/userInfoSlice.jsx";
 
 const HomePage = () => {
 
     const dispatch=useDispatch();
 
-    const {data} = useUserId();
-
+    const {data} = useUserInfo();
     useEffect(()=>{
         if(data){
-            dispatch(userIdActions.login(data.id))
+            dispatch(userInfoActions.login(data))
         }
-    }, [data])
-
-    const userid = useSelector((state)=>state.userId.id)
-
-    console.log('userid',userid)
-
+    }, [data,dispatch])
 
   return (
     <div className={"w-[100%]"}>

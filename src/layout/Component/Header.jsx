@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
 import {useDispatch} from "react-redux";
-import {userIdActions} from "../../redux/reducer/userIdSlice.jsx";
+import {userInfoActions} from "../../redux/reducer/userInfoSlice.jsx";
 
 const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -29,7 +29,7 @@ const Header = () => {
 
   const logout=()=>{
     clearToken();
-    dispatch(userIdActions.logout)
+    dispatch(userInfoActions.logout)
   }
 
   return (
