@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 const ChartItem = ({ type }) => {
     // type 종류 : album, artist, playlist
 
-    // 재생중이 노래 스타일 적용 필요
+    // 재생중인 노래 스타일 적용 필요
+    // 더보기, hover 팝업 효과 만들기
 
     // 좋아요 표시한 곡인지
     const [isLike, setisLike] = useState(false);

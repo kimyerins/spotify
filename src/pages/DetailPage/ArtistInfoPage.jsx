@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
+import RoundInfoCard from '../../common/InfoCard/RoundInfoCard';
+import SquareInfoCard from '../../common/InfoCard/SquareInfoCard';
+import TrackListCard from '../../common/InfoCard/TrackListCard';
 
 const ArtistInfoPage = () => {
     const [popupVisible, setPopupVisible] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const togglePopup =()=>{
         console.log('on');
         setPopupVisible(!popupVisible);
-    }
+    };
+
+    const toggleTrackList = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    const trackListCount = isExpanded ? 10 : 5;
 
     return (
         <div className={'w-[100%] ArtistInfoPage overflow-hidden rounded-[10px] bg-[#121212] mr-2'} style={{ color: 'white'}}>
@@ -18,7 +28,7 @@ const ArtistInfoPage = () => {
                 {/* 배너 */}
                 <div>
                     <div
-                    className={'w-[100%] h-80 bg-cover bg-top under-banner w-webkit-fill-available scale-110 fixed'}
+                    className={'w-[100%] h-80 bg-cover bg-top under-banner w-webkit-fill-available scale-110 fixed top-20'}
                     style={{
                         backgroundImage: `url(https://i.scdn.co/image/ab6761860000101625102f761ef406c4b6789b27)`,
                     }}>
@@ -45,7 +55,7 @@ const ArtistInfoPage = () => {
                         <h2 className={'text-8xl font-extrabold'}>aespa</h2>
                         <div>월별 리스너 <span>10,710,907</span>명</div>
                     </div>
-                    
+
                     {/* 재생 버튼 바 */}
                     <div className={'p-4 flex items-center gap-4 bg-[#121212]'}>
                         <div>
@@ -150,28 +160,58 @@ const ArtistInfoPage = () => {
                     </div>
 
                     {/* 인기 노래 리스트 */}
-                    <div className={'p-4 bg-[#121212] h-80'}>
+                    <div className={'p-4 bg-[#121212]'}>
                         <h3 className={'text-2xl font-bold'}>인기</h3>
+                        <div className={'p-4'}>
+                            {/* TrackListCard 컴포넌트를 trackListCount 수만큼 렌더링 */}
+                            {[...Array(trackListCount)].map((_, index) => (
+                                <TrackListCard key={index} />
+                            ))}
+                            {/* '자세히 보기' / '간단히 보기' 버튼 */}
+                            <button
+                                onClick={toggleTrackList}
+                                className={'p-2 mt-2 text-sm font-bold text-[#b3b3b3] hover:text-[#fff]'}
+                            >
+                                {isExpanded ? '간단히 보기' : '자세히 보기'}
+                            </button>
+                        </div>
                     </div>
 
                     {/* 아티스트 추천 */}
-                    <div className={'p-4 bg-[#121212] h-80'}>
+                    <div className={'p-4 bg-[#121212]'}>
                         <h3 className={'text-2xl font-bold'}>아티스트 추천</h3>
                     </div>
 
-                    {/* 디스코그래피 */}
-                    <div className={'p-4 bg-[#121212] h-80'}>
-                        <h3 className={'text-2xl font-bold'}>디스코그래피</h3>
+                    {/* 인기 음악 */}
+                    <div className={'p-4 bg-[#121212]'}>
+                        <h3 className={'text-2xl font-bold mb-2'}>인기 음악</h3>
+                        <div className={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'} style={{ marginInline: '-12px' }}>
+                            <SquareInfoCard />
+                            <SquareInfoCard />
+                            <SquareInfoCard />
+                            <SquareInfoCard />
+                        </div>
                     </div>
 
                     {/* 피처링 */}
-                    <div className={'p-4 bg-[#121212] h-80'}>
+                    <div className={'p-4 bg-[#121212]'}>
                         <h3 className={'text-2xl font-bold'}>가수명 피처링</h3>
                     </div>
                     
                     {/* 공연일정 */}
                     <div className={'p-4 bg-[#121212]'}>
                         <h3 className={'text-2xl font-bold'}>공연 일정</h3>
+                    </div>
+
+                    {/* 팬들이 좋아하는 다른 음악 */}
+                    <div className={'p-4 bg-[#121212]'}>
+                        <h3 className={'text-2xl font-bold'}>팬들이 좋아하는 다른 음악</h3>
+                        <div className={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'} style={{ marginInline: '-12px' }}>
+                            <RoundInfoCard />
+                            <RoundInfoCard />
+                            <RoundInfoCard />
+                            <RoundInfoCard />
+                        </div>
                     </div>
                 </div>
             </div>
