@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Card from "../../common/Card";
+import useSpotifyToken from "../../hooks/useSpotifyToken";
 import { useSpotifyAlbum } from "../../hooks/useSpotifyAlbum";
 
 const HomePage = () => {
+  const { token } = useSpotifyToken();
   const albumId = "4aawyAB9vmqN3uQ7FjRGTy";
-  const { data, error, isLoading } = useSpotifyAlbum(albumId);
+  const { data, error, isLoading } = useSpotifyAlbum(token);
   console.log("data", data);
   if (isLoading) {
     return <span className="text-white">Loading...</span>;
