@@ -8,7 +8,6 @@ import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import SearchPage from "./pages/SearchPage/SearchPage";
 
 function App() {
-
   return (
     <>
       <Routes>
