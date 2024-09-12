@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Component/Header";
 import MyPlaylist from "./Component/MyPlaylist/MyPlaylist.jsx";
+import PlayerControl from "./Component/PlayerControl";
+
 const Layout = () => {
   return (
     <div>
