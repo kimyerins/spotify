@@ -1,48 +1,33 @@
 import React, { useState } from "react";
-import { useArtistSearchQuery } from "../../hooks/useArtistSearch";
+import Card from "../../common/Card";
+import { useSpotifyAlbum } from "../../hooks/useSpotifyAlbum";
 
 const HomePage = () => {
-  const token = localStorage.getItem("token");
-  const [searchKey, setSearchKey] = useState("");
-  const {
-    data: artists,
-    isLoading,
-    error,
-  } = useArtistSearchQuery(token, searchKey);
-  console.log("artists", artists);
+  const albumId = "4aawyAB9vmqN3uQ7FjRGTy";
+  const { data, error, isLoading } = useSpotifyAlbum(albumId);
+  console.log("data", data);
+  if (isLoading) {
+    return <span className="text-white">Loading...</span>;
+  }
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchKey(e.target.elements.search.value);
-  };
+  // 에러 처리
+  if (error) {
+    console.error("Error fetching album:", error);
+    return <span className="text-white">Error: {error.message}</span>;
+  }
 
-  const renderArtists = () => {
-    return artists?.map((artist) => (
-      <div key={artist.id}>
-        {artist.images.length ? (
-          <img width={"100%"} src={artist.images[0].url} alt={artist.name} />
-        ) : (
-          <div>No Image</div>
-        )}
-        {artist.name}
-      </div>
-    ));
-  };
+  // 데이터 확인
+  if (!data || !data.name) {
+    // data가 없거나 name이 없을 경우
+    return <span className="text-white">No data available</span>;
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="text-white">Artist Search</h1>
-
-        <form onSubmit={handleSearch}>
-          <input type="text" name="search" placeholder="Search for an artist" />
-          <button type="submit">Search</button>
-        </form>
-
-        {isLoading && <p>Loading...</p>}
-        {error && <p>Error fetching artists: {error.message}</p>}
-        {renderArtists()}
-      </header>
+    <div className={"w-[100%]"}>
+      <h2 className="text-white">HomePage</h2>
+      <h3 className="text-white">{data.name}</h3>
+      <img src={data.images[0]?.url} alt={data.name} width="600" />
+      <Card />
     </div>
   );
 };
