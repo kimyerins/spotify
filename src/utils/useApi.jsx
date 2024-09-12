@@ -1,10 +1,10 @@
 import axios from "axios";
+import useSpotifyToken from "../hooks/useSpotifyToken";
 
-const token = localStorage.getItem("spotifyToken");
+const { token } = useSpotifyToken();
 const api = axios.create({
   baseURL: "https://api.spotify.com/v1",
   headers: {
-    Accept: "application/json",
     Authorization: `Bearer ${token}`,
   },
 });
