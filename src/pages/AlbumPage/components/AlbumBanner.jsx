@@ -2,11 +2,11 @@ import React from "react";
 
 const AlbumBanner = () => {
   return (
-    <div className="relative flex justify-center items-center border rounded-md w-full flex-grow-1 overflow-hidden">
+    <div className="relative flex justify-center items-center border rounded-md w-full flex-grow-1  ">
       <div className="z-10 flex justify-center items-center border rounded-md w-full p-6">
-        <div className="z-10 flex gap-6 self-stretch w-full h-full border border-orange-500">
+        <div className="z-10 flex gap-6 self-stretch w-full h-full border  ">
           <div
-            className="rounded-md w-[232px] h-[232px] bg-cover"
+            className="rounded-md w-[232px] h-[232px] bg-cover shadow-custom"
             style={{
               backgroundImage: `url(
               "https://i.namu.wiki/i/3B-OpZ4Zv3EHLm1L1u0vOWjT2Sy4uAT43W93T0QzZW-YhxaP8ECybTqzArW3u6xA86NG-GOWWPPnNyUgPMzllQ.webp")`,
