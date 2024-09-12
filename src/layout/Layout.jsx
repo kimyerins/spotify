@@ -9,8 +9,9 @@ const Layout = () => {
       <Header />
       <div className={"flex"}>
         <MyPlaylist />
+          <Outlet />
       </div>
-      <Outlet />
+
     </div>
   );
 };
