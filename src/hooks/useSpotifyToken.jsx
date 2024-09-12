@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
-const SCOPES = "user-read-private user-read-email";
-
 const useSpotifyToken = () => {
+  const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
+  const SCOPES =
+    "user-read-private user-read-email user-read-playback-state user-read-currently-playing";
+
+  // 로컬 스토리지에서 기존의 토큰을 가져오거나 null로 초기화
   const [token, setToken] = useState(() => {
     return localStorage.getItem("spotifyToken") || null;
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,11 +20,12 @@ const useSpotifyToken = () => {
       const tokenFromUrl = hash
         .split("&")
         .find((elem) => elem.startsWith("#access_token"))
-        .split("=")[1];
+        ?.split("=")[1]; // Optional chaining 사용
+
       if (tokenFromUrl) {
         setToken(tokenFromUrl);
         localStorage.setItem("spotifyToken", tokenFromUrl);
-        window.location.hash = "";
+        window.location.hash = ""; // URL의 해시 제거
         navigate("/");
       } else {
         console.error("토큰이 URL에서 발견되지 않음");
@@ -41,14 +45,6 @@ const useSpotifyToken = () => {
     setToken(null);
     localStorage.removeItem("spotifyToken");
   };
-
-  useEffect(() => {
-    if (token) {
-      const interval = setInterval(() => {}, 50 * 60 * 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [token]);
 
   return { token, login, clearToken };
 };

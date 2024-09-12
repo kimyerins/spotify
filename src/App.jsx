@@ -1,11 +1,12 @@
-import { Route, Routes } from "react-router-dom";
+import { useState } from "react";
 import "./App.css";
-import Layout from "./layout/layout";
-import ArtistInfoPage from "./pages/DetailPage/ArtistInfoPage";
-import DetailPage from "./pages/DetailPage/DetailPage";
+import { Routes, Route } from "react-router-dom";
+import Layout from "./layout/Layout.jsx";
 import HomePage from "./pages/HomePage/HomePage";
-import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import SearchPage from "./pages/SearchPage/SearchPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import DetailPage from "./pages/DetailPage/DetailPage";
+import ArtistInfoPage from "./pages/DetailPage/ArtistInfoPage";
 import { Provider } from "react-redux";
 import store from "./redux/store.jsx";
 import ProtectPage from "./layout/Component/ProtectPage.jsx";
