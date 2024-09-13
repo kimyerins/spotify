@@ -6,7 +6,20 @@ import { usePlayerState } from "../../hooks/Player/usePlayer";
 const PlayerControl = () => {
   const { token } = useSpotifyToken();
   const { data } = usePlayerDevices(token);
-  const { data: player } = usePlayerState(token);
+  const { data: player, isLoading, error } = usePlayerState(token);
+
+  if (isLoading) {
+    console.log("플레이어 상태를 불러오는 중...");
+    return null;
+  }
+  if (error) {
+    console.log("플레이어 상태를 로드하는 중에 오류가 발생했습니다.");
+    return null;
+  }
+  if (player === null) {
+    console.log("현재 재생중인 곡이 없습니다.");
+    //return null;
+  }
   console.log("player", player);
   console.log("devices", data);
 
