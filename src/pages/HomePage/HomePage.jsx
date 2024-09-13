@@ -24,7 +24,7 @@ const HomePage = () => {
 
   return (
       <div
-          className={'flex h-[calc(100vh-140px)] w-[calc(100vw-700px)] min-w-[600px] mx-2 p-3 bg-[#121212] justify-center rounded-[10px] overflow-hidden hover:overflow-y-auto custom-scrollbar'}>
+          className={''}>
         <div className={'main max-w-[2100px]'}>
           <div className={'flex'}>
             <button
