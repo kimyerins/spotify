@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import ControllerBar from "./components/ControllerBar";
 import TrackList from "./components/TrackList";
 import { useState } from "react";
+import AlbumPageFooter from "./AlbumPageFooter";
 
 const AlbumPage = () => {
   const [viewOption, setViewOption] = useState("small"); // 보기를 small or list로 설정
@@ -26,9 +27,18 @@ const AlbumPage = () => {
         <AlbumBanner />
       </div>
       {/* 트랙리스트 섹션 */}
-      <div className="p-4">
+      <div className="p-4 ">
         <ControllerBar viewOptionBox={viewOptionBox} />
         <TrackList viewOptionBox={viewOptionBox} />
+      </div>
+      <div className="text-[#b3b3b3] flex flex-col mt-9 p-4">
+        <span className="text-[14px]">September 2024</span>
+        <span className="text-[11px]">
+          ℗ 2024 React Study Group 2nd Generation, Team 3
+        </span>
+        <span className="text-[11px]">
+          ℗ 2024 React Study Group 2nd Generation, Team 3
+        </span>
       </div>
       {/* 더보기 */}
       <div>
@@ -39,7 +49,7 @@ const AlbumPage = () => {
           >
             xx님의 곡 더보기
           </Link>
-          <div className="cursor-pointer hover:underline text-[#b3b3b3] font-medium pr-3">
+          <div className="cursor-pointer hover:underline text-[#b3b3b3] font-medium pr-2">
             디스코 그래피보기
           </div>
         </div>
@@ -51,6 +61,7 @@ const AlbumPage = () => {
           <Card title="정국" subTitle="아티스트" />
         </div>
       </div>
+      {/* <AlbumPageFooter /> */}
     </div>
   );
 };

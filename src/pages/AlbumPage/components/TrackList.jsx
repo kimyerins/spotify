@@ -5,8 +5,8 @@ import TrackTypeSmall from "./TrackTypeSmall";
 const TrackList = ({ viewOptionBox }) => {
   const { viewOption, setViewOption } = viewOptionBox;
   return (
-    <div className="text-white m-3">
-      <div className="flex justify-between px-4  pb-2 border-b opacity-70 ">
+    <div className="text-white  mt-8 ">
+      <div className="flex justify-between px-4  pb-2 border-b opacity-70 w-full">
         <div className="flex gap-4 ml-5 ">
           <span>#</span>
           <span>제목</span>
