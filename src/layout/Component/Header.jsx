@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
-import {useDispatch} from "react-redux";
-import {userInfoActions} from "../../redux/reducer/userInfoSlice.jsx";
+import { useDispatch } from "react-redux";
+import { userInfoActions } from "../../redux/reducer/userInfoSlice.jsx";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { useUserInfo } from "../../hooks/useUserInfo.jsx";
+import SearchBar from "./SearchBar.jsx";
 
 const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -61,50 +64,7 @@ const Header = () => {
           </span>
         </Link>
         <Link to="/search">
-          <div
-            className={`search-box flex gap-4 items-center bg-[#1f1f1f] text-white rounded-full px-4 py-2 h-12 w-[474px] cursor-pointer hover:bg-[#404040] ${
-              isFocused ? "border-2 border-white" : ""
-            }`}
-          >
-            <svg
-              className="self-center w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              stroke="#b3b3b3"
-            >
-              <path
-                d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-                stroke="#b3b3b3"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <input
-              type="text"
-              placeholder="어떤 콘텐츠를 감상하고 싶으세요?"
-              className="search bg-transparent border-none w-4/5 outline-none text-sm text-white placeholder:text-[#b3b3b3] focus:outline-none focus:ring-0"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-
-            <svg
-              className={`self-center w-8 h-8 hover:stroke-white pl-2 border-l-[1px] border-solid border-[#b3b3b3] ${
-                isFocused ? "fill-white stroke-none" : ""
-              }`}
-              data-encore-id="icon"
-              role="img"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              stroke="#b3b3b3"
-              fill="none"
-              strokeWidth="2"
-            >
-              <path d="M4 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v4H4V2zM1.513 9.37A1 1 0 0 1 2.291 9H21.71a1 1 0 0 1 .978 1.208l-2.17 10.208A2 2 0 0 1 18.562 22H5.438a2 2 0 0 1-1.956-1.584l-2.17-10.208a1 1 0 0 1 .201-.837zM12 17.834c1.933 0 3.5-1.044 3.5-2.333 0-1.289-1.567-2.333-3.5-2.333S8.5 14.21 8.5 15.5c0 1.289 1.567 2.333 3.5 2.333z"></path>
-            </svg>
-          </div>
+          <SearchBar isFocused={isFocused} setIsFocused={setIsFocused} />
         </Link>
       </div>
 
