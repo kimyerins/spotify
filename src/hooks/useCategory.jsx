@@ -1,27 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "../utils/useApi";
 
-const fetchCategory = async (token, limit = 10) => {  // limit 기본값을 10으로 설정
-  if (!token) {
-    throw new Error("Token is missing!");
-  }
-
-  const { data } = await axios.get("https://api.spotify.com/v1/browse/categories", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const fetchCategory = async (limit = 10) => {
+  const response = await api.get("/browse/categories", {
     params: {
       limit,  // limit을 쿼리 파라미터로 추가
     },
   });
-
-  return data.categories.items;
+  return response.data?.categories?.items || [];  //데이터가 없으면 빈 배열 반환
 };
 
-export const useCategoryQuery = (token, limit) => {
+export const useCategoryQuery = (limit) => {
   return useQuery({
     queryKey: ["get-category", limit],
-    queryFn: () => fetchCategory(token, limit),  // limit을 fetchCategory에 전달
+    queryFn: () => fetchCategory(limit),
     select: (result) => result,
   });
 };

@@ -1,7 +1,10 @@
-const flowbite = require("flowbite-react/tailwind");
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", flowbite.content()],
+module.exports = {
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}', // Flowbite의 경로
+  ],
   theme: {
     extend: {
       boxShadow: {
@@ -9,5 +12,8 @@ export default {
       },
     },
   },
-  plugins: [flowbite.plugin()],
+  plugins: [
+    require('flowbite/plugin'), // Flowbite 플러그인
+    require('@tailwindcss/line-clamp'),
+  ],
 };

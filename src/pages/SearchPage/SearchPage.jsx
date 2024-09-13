@@ -5,11 +5,9 @@ import { Link } from 'react-router-dom';
 
 const SearchPage = () => {
     const token = localStorage.getItem("spotifyToken");
-    const { data, error, isLoading } = useCategoryQuery(token, 36);
+    const { data, error, isLoading } = useCategoryQuery(36);
     const [columns, setColumns] = useState(6);
     const containerRef = useRef(null);
-
-    console.log(data)
 
     // 메인 컨테이너(부모 요소) 너비에 따라 그리드 컬럼 수를 설정
     useEffect(() => {
@@ -27,6 +25,8 @@ const SearchPage = () => {
                 } else {
                     setColumns(6);
                 }
+            } else {
+                setColumns(4);
             }
         };
 
@@ -49,7 +49,9 @@ const SearchPage = () => {
             <h2 className='h-[60px] flex font-bold text-2xl items-center mt-8'>모두 둘러보기</h2>
             <div className={`grid gap-4 ${gridClass}`}>
                 {data && data.map((category, index) => (
-                    <Link to={`https://open.spotify.com/genre/${category.id}`}><RectangleCard key={category.id} genre={category.name} imgSrc={category.icons[0].url} index={index} /></Link>
+                    <Link to={`https://open.spotify.com/genre/${category.id}`} key={index}>
+                        <RectangleCard key={category.id} genre={category.name} imgSrc={category.icons[0].url} index={index} />
+                    </Link>
                 ))}
             </div>
         </div>
