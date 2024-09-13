@@ -1,5 +1,6 @@
 import React from "react";
 import TrackListCard from "../../../common/InfoCard/TrackListCard";
+import ChartItem from "../../../common/ChartItem";
 
 const TrackList = () => {
   return (
@@ -31,7 +32,15 @@ const TrackList = () => {
           </span>
         </div>
       </div>
-      <div>트랙리스트</div>
+      {/* 트랙리스트 */}
+      <div className="p-1">
+        <ChartItem />
+        <ChartItem />
+        <ChartItem />
+        <ChartItem />
+        <ChartItem />
+        <ChartItem />
+      </div>
     </div>
   );
 };

@@ -33,7 +33,7 @@ const AlbumPage = () => {
           >
             xx님의 곡 더보기
           </Link>
-          <div className="cursor-pointer hover:underline text-[#b3b3b3] font-medium">
+          <div className="cursor-pointer hover:underline text-[#b3b3b3] font-medium pr-3">
             디스코 그래피보기
           </div>
         </div>
