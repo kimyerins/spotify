@@ -30,6 +30,14 @@ const PlayerPlaylist = ({ visibleSection }) => {
     queueQuery.refetch(); // 컴포넌트가 마운트될 때 데이터 Fetch
   }, [queueQuery]);
 
+  if (queueQuery.isError) {
+    console.error("Error fetching queue: ", queueQuery.error.message);
+  }
+
+  if (devicesQuery.isError) {
+    console.error("Error fetching devices: ", devicesQuery.error.message);
+  }
+
   return (
     <div className="h-[calc(100vh-140px)] min-w-[320px] mx-2 bg-[#121212] rounded-[10px] overflow-y-scroll">
       {visibleSection === "playlist" && (
@@ -59,23 +67,24 @@ const PlayerPlaylist = ({ visibleSection }) => {
                   <img
                     className="rounded-[5px]"
                     src={
-                      queueQuery.data.currently_playing.album?.images?.[0]?.url
+                      queueQuery?.data?.currently_playing?.album?.images?.[0]
+                        ?.url
                     }
-                    alt={queueQuery.data.currently_playing.name}
+                    alt={queueQuery?.data?.currently_playing?.name}
                   />
                 </div>
                 <div className="txtbox">
                   <h5 className="text-white text-[16px]">
-                    {queueQuery.data.currently_playing.name}
+                    {queueQuery?.data?.currently_playing?.name}
                   </h5>
                   <p className="text-[14px] text-[#b3b3b3]">
-                    {queueQuery.data.currently_playing.artists?.[0]?.name}
+                    {queueQuery?.data?.currently_playing?.artists?.[0]?.name}
                   </p>
                 </div>
               </div>
               <h3 className="text-white">다음 곡들</h3>
               <ul>
-                {queueQuery.data.queue.slice(0, 12).map((track, index) => (
+                {queueQuery?.data.queue.slice(0, 12).map((track, index) => (
                   <li key={index} className="text-white flex p-[8px]">
                     <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
                       <img
@@ -101,7 +110,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
       )}
       {visibleSection === "device" && (
         <div className="devicesBox">
-          {devicesQuery.data && (
+          {devicesQuery?.data && (
             <div>
               <div className="tit_wrap px-[16px]">
                 <div className="flex justify-between items-center py-[8px]">
