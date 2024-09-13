@@ -16,8 +16,6 @@ const SearchResultPage = () => {
     // 검색 결과
     const { data: results, isLoading, isError, error } = useSearchQuery(keyword);
 
-    console.log(results)
-
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Error: {error.message}</p>;
 
