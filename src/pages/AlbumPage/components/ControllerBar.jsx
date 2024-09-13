@@ -3,9 +3,16 @@ import { useState } from "react";
 import AddButton from "../../../assets/images/AddButton.svg?react";
 import RadioButton from "../../../assets/images/RadioButton.svg?react";
 import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
+import ViewOptionBox from "./ViewOptionBox";
 
 const ControllerBar = () => {
-  const [openOption, isOpenOption] = useState(false);
+  const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
+  const [isViewOptionOpen, setIsViewOptionOpen] = useState(false); // 보기 옵션이 열려있는지 여부
+  const [viewOption, setViewOption] = useState("small"); // 보기를 small or list로 설정
+  const viewOptionState = {
+    viewOption: viewOption,
+    setViewOption: setViewOption,
+  };
   return (
     <div className="flex justify-between items-center ">
       <div className="flex items-center gap-4">
@@ -42,7 +49,7 @@ const ControllerBar = () => {
         <div
           className="cursor-pointer relative"
           onClick={() => {
-            isOpenOption(!openOption);
+            setIsOptionOpen(!isOptionOpen);
           }}
         >
           <svg
@@ -62,23 +69,24 @@ const ControllerBar = () => {
             />
           </svg>
           {/* 옵션 메뉴 */}
-          {openOption && (
+
+          {isOptionOpen && (
             <div className="z-10 absolute  rounded-md w-[220px] p-1 bg-[#282828]">
-              <ul className="text-white text-sm font-medium tracking-tighter opacity-80 rounded-md">
-                <li className="py-3 pl-3 pr-2 flex items-center gap-2 rounded-sm hover:bg-[#3E3D3D]">
+              <ul className="text-white text-sm font-semibold tracking-tighter opacity-80 rounded-md">
+                <li className="py-3 pl-3 pr-2 flex items-center gap-3 rounded-sm hover:bg-[#3E3D3D]">
                   <AddButton width={18} height={18} color="white" />
                   <span>내 라이브러리에 추가하기</span>
                 </li>
-                <li className="py-3 pl-3 pr-2 flex gap-2 items-center  rounded-sm hover:bg-[#3E3D3D]">
+                <li className="py-3 pl-3 pr-2 flex gap-3 items-center  rounded-sm hover:bg-[#3E3D3D]">
                   <RadioButton width={16} height={16} color="white" />
                   <span>아티스트 라디오 보러가기</span>
                 </li>
-                <li className="py-3 pl-3 pr-2 flex gap-2 items-center  rounded-sm hover:bg-[#3E3D3D]">
+                <li className="py-3 pl-3 pr-2 flex gap-3 items-center  rounded-sm hover:bg-[#3E3D3D]">
                   <AddPlayButton width={16} height={16} color="white" />
                   <span>재생목록에 추가하기</span>
                 </li>
-                <li className="py-3 pl-3 pr-2 flex gap-2 items-center  justify-between rounded-sm  border-t border-[#3E3D3D] hover:bg-[#3E3D3D]">
-                  <div className="flex gap-1 items-center">
+                <li className="py-3 pl-3 pr-2 flex gap-3 items-center  justify-between rounded-sm  border-t border-[#3E3D3D] hover:bg-[#3E3D3D]">
+                  <div className="flex gap-2 items-center">
                     <svg
                       className="w-5 h-5 text-white dark:text-white"
                       aria-hidden="true"
@@ -109,9 +117,9 @@ const ControllerBar = () => {
                   </svg>
                 </li>
                 <li className="py-3 pl-3 pr-2 flex gap-2 items-center justify-between  rounded-sm  border-y border-[#3E3D3D] hover:bg-[#3E3D3D]">
-                  <div className="flex gap-2 items-center ">
+                  <div className="flex gap-3 items-center ">
                     <svg
-                      className="w-4 h-4 text-white dark:text-white"
+                      className="w-4 h-4 text-white dark:text-white "
                       role="img"
                       aria-hidden="true"
                       viewBox="0 0 16 16"
@@ -132,9 +140,9 @@ const ControllerBar = () => {
                     <path d="M14 10 8 4l-6 6h12z" />
                   </svg>
                 </li>
-                <li className="py-3 pl-3 pr-2 flex gap-2 items-center  rounded-sm hover:bg-[#3E3D3D]">
+                <li className="py-3 pl-3 pr-2 flex gap-3 items-center  rounded-sm hover:bg-[#3E3D3D]">
                   <svg
-                    className="w-4 h-4 text-white dark:text-white"
+                    className="w-4 h-4 text-white dark:text-white "
                     role="img"
                     aria-hidden="true"
                     viewBox="0 0 16 16"
@@ -149,25 +157,66 @@ const ControllerBar = () => {
           )}
         </div>
       </div>
-      <div className="text-[#b3b3b3] text-sm flex items-center gap-1 cursor-pointer group">
-        <span className="group-hover:text-white">작게</span>
-        {/* 햄버거버튼 */}
-        <svg
-          class="w-6 h-6 text-[#b3b3b3]  dark:text-white  group-hover:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-width="2"
-            d="M5 7h14M5 12h14M5 17h14"
-          />
-        </svg>
+      {/* 보기옵션 */}
+      <div
+        className="text-[#b3b3b3] text-sm flex items-center gap-1 cursor-pointer group "
+        onClick={() => {
+          setIsViewOptionOpen(!isViewOptionOpen);
+        }}
+      >
+        {viewOption == "smal" ? (
+          <div className="flex items-center gap-1 relative">
+            <span className="group-hover:text-white">작게</span>
+            {/* 햄버거버튼 */}
+            <svg
+              class="w-6 h-6 text-[#b3b3b3]  dark:text-white  group-hover:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-width="2"
+                d="M5 7h14M5 12h14M5 17h14"
+              />
+            </svg>
+            {isViewOptionOpen && (
+              <div className="absolute bottom-0 right-0">
+                <ViewOptionBox viewOptionState={viewOptionState} />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 relative">
+            <span className="group-hover:text-white">목록</span>
+            {/* 리스트버튼 */}
+            <svg
+              class="w-7 h-7 text-[#b3b3b3]  dark:text-white   group-hover:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="2"
+                d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"
+              />
+            </svg>
+            {isViewOptionOpen && (
+              <div className="absolute bottom-0 right-0">
+                <ViewOptionBox viewOptionState={viewOptionState} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

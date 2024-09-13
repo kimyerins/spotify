@@ -32,7 +32,9 @@ const AlbumPage = () => {
           >
             xx님의 곡 더보기
           </Link>
-          <div>디스코 그래피보기</div>
+          <div className="cursor-pointer hover:underline text-[#b3b3b3] font-medium">
+            디스코 그래피보기
+          </div>
         </div>
         <div className="flex justify-around">
           <Card title="정국" subTitle="아티스트" />
