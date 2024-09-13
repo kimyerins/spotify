@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Card from "../../common/Card";
-import { useSpotifyAlbum } from "../../hooks/useSpotifyAlbum";
+import { useDispatch } from "react-redux";
+import { useUserInfo } from "../../hooks/useUserInfo.jsx";
+import { userInfoActions } from "../../redux/reducer/userInfoSlice.jsx";
+import { useSpotifyAlbum } from "../../hooks/useSpotifyAlbum.jsx";
 
 const HomePage = () => {
   const albumId = "4aawyAB9vmqN3uQ7FjRGTy";
-  const { data, error, isLoading } = useSpotifyAlbum(albumId);
-  console.log("data", data);
+  const { data: album, error, isLoading } = useSpotifyAlbum(albumId);
+
+  const dispatch = useDispatch();
+
+  const { data } = useUserInfo();
+  useEffect(() => {
+    if (data) {
+      dispatch(userInfoActions.login(data));
+    }
+  }, [data, dispatch]);
+  console.log("data", album);
+
   if (isLoading) {
     return <span className="text-white">Loading...</span>;
   }
@@ -16,17 +29,11 @@ const HomePage = () => {
     return <span className="text-white">Error: {error.message}</span>;
   }
 
-  // 데이터 확인
-  if (!data || !data.name) {
-    // data가 없거나 name이 없을 경우
-    return <span className="text-white">No data available</span>;
-  }
-
   return (
     <div className={"w-[100%]"}>
       <h2 className="text-white">HomePage</h2>
-      <h3 className="text-white">{data.name}</h3>
-      <img src={data.images[0]?.url} alt={data.name} width="600" />
+      <h3 className="text-white">{album.name}</h3>
+      <img src={album.images[0]?.url} alt={album.name} width="600" />
       <Card />
     </div>
   );

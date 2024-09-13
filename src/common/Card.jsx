@@ -18,7 +18,7 @@ const Card = ({
   const defaultUrl =
     "https://i.namu.wiki/i/3B-OpZ4Zv3EHLm1L1u0vOWjT2Sy4uAT43W93T0QzZW-YhxaP8ECybTqzArW3u6xA86NG-GOWWPPnNyUgPMzllQ.webp";
   return (
-    <div className="group">
+    <div className="group display: inline-block">
       <div
         className="flex flex-col self-stretch flex-grow-0 flex-shrink-1 w-[181.5px] relative gap-2 p-3 rounded-md group-hover:bg-[#1E1E1E] cursor-pointer"
         onClick={() => {

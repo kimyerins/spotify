@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
+import {useDispatch} from "react-redux";
+import {userInfoActions} from "../../redux/reducer/userInfoSlice.jsx";
 
 const Header = () => {
-  const [isAuthenticate, setAuthenticate] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navigate = useNavigate();
   const dropdownRef = useRef(null); // 드롭박스를 감지하기 위한 ref
   const { login, clearToken, token } = useSpotifyToken();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // 드롭다운 외부 클릭을 감지하는 이벤트 핸들러
@@ -25,6 +26,11 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
+
+  const logout=()=>{
+    clearToken();
+    dispatch(userInfoActions.logout)
+  }
 
   return (
     <div className="ml-6 mr-2 my-2 flex justify-between">
@@ -85,7 +91,7 @@ const Header = () => {
             />
 
             <svg
-              className={`self-center w-6 h-6 hover:stroke-white pl-2 border-l-[1px] border-solid border-[#b3b3b3] ${
+              className={`self-center w-8 h-8 hover:stroke-white pl-2 border-l-[1px] border-solid border-[#b3b3b3] ${
                 isFocused ? "fill-white stroke-none" : ""
               }`}
               data-encore-id="icon"
@@ -134,7 +140,7 @@ const Header = () => {
                 <div className="py-1">
                   <div
                     className="block px-4 py-2 text-sm bg-[#282828] hover:bg-[#464646] cursor-pointer"
-                    onClick={clearToken}
+                    onClick={logout}
                   >
                     로그아웃
                   </div>

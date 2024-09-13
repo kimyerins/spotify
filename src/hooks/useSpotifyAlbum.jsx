@@ -1,20 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import useApi from "../utils/useApi";
+import api from "../utils/useApi";
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const fetchAlbum = async (albumId) => {
-  const api = useApi();
-  await delay(1000);
-  const response = await api.get(`/albums/${albumId}`);
-  return response.data;
+const fetchAlbum = async (token) => {
+  return api.get(`/albums/${token}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-export const useSpotifyAlbum = (albumId) => {
+export const useSpotifyAlbum = (token) => {
   return useQuery({
-    queryKey: ["album", albumId],
-    queryFn: () => fetchAlbum(albumId),
-    enabled: !!albumId,
-    staleTime: 1000 * 60 * 5,
-    retry: false,
+    queryKey: ["album", token],
+    queryFn: () => fetchAlbum(token),
+    select: (result) => result.data,
   });
 };

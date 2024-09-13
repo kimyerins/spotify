@@ -3,10 +3,10 @@ import React from "react";
 const AlbumBanner = () => {
   return (
     <div className="relative flex justify-center items-center  rounded-md w-full flex-grow-1  ">
-      <div className="z-10 flex justify-center items-center  rounded-md w-full p-6">
+      <div className="z-10 flex justify-center items-center  rounded-md w-full p-4">
         <div className="z-10 flex gap-6 self-stretch w-full h-full   ">
           <div
-            className="rounded-md w-[232px] h-[232px] bg-cover shadow-custom"
+            className="rounded-md w-[232px] h-[232px] bg-cover shadow-custom hover:scale-[102%] transition-all duration-200"
             style={{
               backgroundImage: `url(
               "https://i.namu.wiki/i/3B-OpZ4Zv3EHLm1L1u0vOWjT2Sy4uAT43W93T0QzZW-YhxaP8ECybTqzArW3u6xA86NG-GOWWPPnNyUgPMzllQ.webp")`,
@@ -29,7 +29,9 @@ const AlbumBanner = () => {
               </div>
               <div>
                 <ul className="text-white flex gap-1">
-                  <li className="text-white">정국</li>
+                  <li className="text-white hover:underline cursor-pointer">
+                    정국
+                  </li>
                   <li className="opacity-65">・</li>
                   <li className="opacity-65">2023</li>
                   <li className="opacity-65">・</li>
