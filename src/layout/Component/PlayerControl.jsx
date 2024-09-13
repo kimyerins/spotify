@@ -1,12 +1,66 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
-import { usePlayerState } from "../../hooks/Player/usePlayer";
+import {
+  usePlayerState,
+  usePlayTrack,
+  usePauseTrack,
+} from "../../hooks/Player/usePlayer";
+import { useVolume, useSetVolume } from "../../hooks/Player/useVolume";
+import { debounce } from "lodash";
+import "./Player.css";
 
-const PlayerControl = () => {
-  const { token } = useSpotifyToken();
-  const { data } = usePlayerDevices(token);
-  const { data: player, isLoading, error } = usePlayerState(token);
+const PlayerControl = ({ visibleSection, setVisibleSection }) => {
+  //const { token } = useSpotifyToken();
+  const [token, setToken] = useState(() =>
+    localStorage.getItem("spotifyToken")
+  );
+  const { data: deviceData, refetch: refetchDevices } = usePlayerDevices(token);
+  const {
+    data: playerState,
+    isLoading,
+    error,
+    refetch: refetchPlayerState,
+  } = usePlayerState(token);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(null);
+  const playTrackMutation = usePlayTrack(token);
+  const pauseTrackMutation = usePauseTrack(token);
+  const { data: currentVolume } = useVolume(token);
+  const mutation = useSetVolume();
+  const [volume, setVolume] = useState(0);
+  console.log("volume", volume);
+
+  useEffect(() => {
+    if (currentVolume !== undefined) {
+      setVolume(currentVolume);
+    }
+  }, [currentVolume]);
+
+  const debouncedSetVolume = useCallback(
+    debounce((newVolume) => {
+      mutation.mutate({ token, volume: newVolume });
+    }, 500),
+    [token]
+  );
+
+  const handleVolumeChange = (event) => {
+    const newVolume = event.target.value;
+    setVolume(newVolume);
+    debouncedSetVolume(newVolume);
+  };
+
+  useEffect(() => {
+    if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
+      setSelectedDeviceId(deviceData.devices[0].id);
+    }
+  }, [deviceData]);
+  useEffect(() => {
+    const refreshDevicesInterval = setInterval(() => {
+      refetchDevices();
+    }, 10000); // 10초마다 디바이스 목록 갱신
+
+    return () => clearInterval(refreshDevicesInterval);
+  }, [refetchDevices]);
 
   if (isLoading) {
     console.log("플레이어 상태를 불러오는 중...");
@@ -16,26 +70,106 @@ const PlayerControl = () => {
     console.log("플레이어 상태를 로드하는 중에 오류가 발생했습니다.");
     return null;
   }
-  if (player === null) {
+  if (!playerState) {
     console.log("현재 재생중인 곡이 없습니다.");
-    //return null;
   }
-  console.log("player", player);
-  console.log("devices", data);
+
+  const handlePlayPause = async () => {
+    if (!token || !selectedDeviceId) {
+      console.log("토큰 또는 선택된 디바이스가 없습니다.");
+      await deviceData();
+      return;
+    }
+
+    try {
+      if (playerState?.is_playing) {
+        // 현재 재생 중이면 일시정지
+        const result = await pauseTrackMutation.mutateAsync({
+          deviceData: selectedDeviceId,
+        });
+        console.log("일시정지 결과:", result);
+      } else {
+        // 현재 일시정지 상태이면 재생
+        const context = playerState?.context;
+        const currentTrack = playerState?.item;
+        const progress = playerState?.progress_ms || 0;
+        let playParams = {
+          device_id: selectedDeviceId,
+          position_ms: progress,
+        };
+
+        if (context) {
+          // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
+          playParams.context_uri = context.uri;
+          if (currentTrack) {
+            playParams.offset = { uri: currentTrack.uri };
+          }
+        } else if (currentTrack) {
+          // 단일 트랙인 경우
+          playParams.uris = [currentTrack.uri];
+        } else {
+          console.error("재생할 수 있는 트랙이 없습니다.");
+          return;
+        }
+
+        const playResult = await playTrackMutation.mutateAsync(playParams);
+        console.log("재생 시작", playParams);
+        console.log("재생 결과:", playResult);
+      }
+
+      // 플레이어 상태 갱신
+      setTimeout(() => {
+        refetchPlayerState();
+      }, 500); // 500ms 후에 상태 갱신
+    } catch (error) {
+      console.error("재생/일시정지 중 오류 발생:", error);
+      if (error.response) {
+        console.error("에러 응답:", error.response.data);
+        console.error("에러 상태:", error.response.status);
+        console.error("에러 헤더:", error.response.headers);
+
+        if (error.response.status === 400) {
+          console.error("400 Bad Request 에러: 요청에 문제가 있습니다.");
+          console.error("요청 파라미터:", {
+            deviceId: selectedDeviceId,
+            context: playerState?.context,
+            currentTrack: playerState?.item,
+          });
+
+          // 디바이스 목록 갱신
+          await refetchDevices();
+        } else if (error.response.status === 401) {
+          console.error(
+            "401 Unauthorized 에러: 토큰이 만료되었거나 유효하지 않습니다."
+          );
+          // 여기에 토큰 갱신 또는 재로그인 로직을 추가할 수 있습니다.
+        }
+      } else if (error.request) {
+        console.error(
+          "요청이 전송되었지만 응답을 받지 못했습니다:",
+          error.request
+        );
+      } else {
+        console.error("에러 메시지:", error.message);
+      }
+    }
+  };
+
+  //console.log("player", playerState);
 
   return (
-    <div className="fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
+    <div className="control fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
       <div className="music_wrap flex items-center">
         <div className="album rounded-[5px] overflow-hidden w-[56px] h-[56x] mr-[8px]">
-          <img src={player?.item.album.images[0]?.url} alt="album image" />
+          <img src={playerState?.item.album.images[0]?.url} alt="album image" />
         </div>
         <div className="txts mx-[8px]">
-          <p className="text-white text-[14px]">{player?.item.name}</p>
+          <p className="text-white text-[14px]">{playerState?.item.name}</p>
           <p className="text-[#b3b3b3] text-[12px]">
-            {player?.item.artists[0].name}
+            {playerState?.item.artists[0].name}
           </p>
         </div>
-        <div className="add p-[8px]">
+        <div className="add btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -50,7 +184,7 @@ const PlayerControl = () => {
         </div>
       </div>
       <div className="control_wrap flex items-center">
-        <div className="shuffle p-[8px]">
+        <div className="shuffle btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -63,7 +197,7 @@ const PlayerControl = () => {
             <path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"></path>
           </svg>
         </div>
-        <div className="prev p-[8px]">
+        <div className="prev btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -75,19 +209,39 @@ const PlayerControl = () => {
             <path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"></path>
           </svg>
         </div>
-        <div className="playPause p-[8px] w-[32px] h-[32px] flex items-center justify-center rounded-full bg-[#fff]">
-          <svg
-            data-encore-id="icon"
-            role="img"
-            aria-hidden="true"
-            viewBox="0 0 16 16"
-            className="Svg-sc-ytk21e-0 dYnaPI w-[16px] h-[16px]"
-            fill={"#000"}
-          >
-            <path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
-          </svg>
+        <div
+          onClick={handlePlayPause}
+          className="playPause p-[8px] mx-[16px] w-[32px] h-[32px] flex items-center justify-center rounded-full bg-[#fff]"
+        >
+          {playerState?.is_playing ? (
+            <div className="pause">
+              <svg
+                data-encore-id="icon"
+                role="img"
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                className="Svg-sc-ytk21e-0 dYnaPI w-[16px] h-[16px]"
+                fill={"#000"}
+              >
+                <path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+              </svg>
+            </div>
+          ) : (
+            <div className="play">
+              <svg
+                data-encore-id="icon"
+                role="img"
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                className="Svg-sc-ytk21e-0 dYnaPI w-[16px] h-[16px]"
+                fill={"#000"}
+              >
+                <path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"></path>
+              </svg>
+            </div>
+          )}
         </div>
-        <div className="next p-[8px]">
+        <div className="next btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -99,7 +253,7 @@ const PlayerControl = () => {
             <path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"></path>
           </svg>
         </div>
-        <div className="repeat p-[8px]">
+        <div className="repeat btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -113,7 +267,7 @@ const PlayerControl = () => {
         </div>
       </div>
       <div className="icon_wrap flex items-center">
-        <div className="npv p-[8px]">
+        <div className="npv btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -126,7 +280,7 @@ const PlayerControl = () => {
             <path d="M15.002 1.75A1.75 1.75 0 0 0 13.252 0h-10.5a1.75 1.75 0 0 0-1.75 1.75v12.5c0 .966.783 1.75 1.75 1.75h10.5a1.75 1.75 0 0 0 1.75-1.75V1.75zm-1.75-.25a.25.25 0 0 1 .25.25v12.5a.25.25 0 0 1-.25.25h-10.5a.25.25 0 0 1-.25-.25V1.75a.25.25 0 0 1 .25-.25h10.5z"></path>
           </svg>
         </div>
-        <div className="lyrics p-[8px]">
+        <div className="lyrics btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -138,7 +292,12 @@ const PlayerControl = () => {
             <path d="M13.426 2.574a2.831 2.831 0 0 0-4.797 1.55l3.247 3.247a2.831 2.831 0 0 0 1.55-4.797zM10.5 8.118l-2.619-2.62A63303.13 63303.13 0 0 0 4.74 9.075L2.065 12.12a1.287 1.287 0 0 0 1.816 1.816l3.06-2.688 3.56-3.129zM7.12 4.094a4.331 4.331 0 1 1 4.786 4.786l-3.974 3.493-3.06 2.689a2.787 2.787 0 0 1-3.933-3.933l2.676-3.045 3.505-3.99z"></path>
           </svg>
         </div>
-        <div className="queue p-[8px]">
+        <div
+          className={`queue btn p-[8px] ${
+            visibleSection === "playlist" ? "active" : ""
+          }`}
+          onClick={() => setVisibleSection("playlist")}
+        >
           <svg
             data-encore-id="icon"
             role="img"
@@ -150,7 +309,12 @@ const PlayerControl = () => {
             <path d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-7A2.5 2.5 0 0 1 3.5 1h9a2.5 2.5 0 0 1 0 5h-9A2.5 2.5 0 0 1 1 3.5zm2.5-1a1 1 0 0 0 0 2h9a1 1 0 1 0 0-2h-9z"></path>
           </svg>
         </div>
-        <div className="tertiary p-[8px]">
+        <div
+          className={`tertiary btn p-[8px] ${
+            visibleSection === "device" ? "active" : ""
+          }`}
+          onClick={() => setVisibleSection("device")}
+        >
           <svg
             data-encore-id="icon"
             role="img"
@@ -177,8 +341,16 @@ const PlayerControl = () => {
             <path d="M11.5 13.614a5.752 5.752 0 0 0 0-11.228v1.55a4.252 4.252 0 0 1 0 8.127v1.55z"></path>
           </svg>
         </div>
-        <div className="volimn-bar mr-[8px]"></div>
-        <div className="miniPlay p-[8px]">
+        <div className="volume-bar mr-[8px]">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+        </div>
+        <div className="miniPlay btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -191,7 +363,7 @@ const PlayerControl = () => {
             <path d="M15.25 9.007a.75.75 0 0 1 .75.75v4.493a.75.75 0 0 1-.75.75H9.325a.75.75 0 0 1-.75-.75V9.757a.75.75 0 0 1 .75-.75h5.925z"></path>
           </svg>
         </div>
-        <div className="fullScreen p-[8px]">
+        <div className="fullScreen btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"

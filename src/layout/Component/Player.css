@@ -1,0 +1,61 @@
+.volume-bar {
+  line-height: 4px;
+}
+input[type="range"] {
+  appearance: none;
+  width: 92px;
+  height: 4px;
+  background: #b3b3b3;
+  border-radius: 5px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]:active::-webkit-slider-thumb,
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #fff;
+}
+
+.control .btn {
+  cursor: pointer;
+}
+.control .btn:hover svg {
+  fill: #fff;
+}
+.queue,
+.tertiary {
+  position: relative;
+}
+.queue.active::before,
+.tertiary.active::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: #1ed760;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.queue.active svg,
+.tertiary.active svg {
+  fill: #1ed760;
+}
