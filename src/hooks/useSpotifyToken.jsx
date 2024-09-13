@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 const useSpotifyToken = () => {
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
-  const SCOPES = "user-read-private user-read-email";
+  const SCOPES =
+    "user-read-private user-read-email user-read-playback-state user-read-currently-playing";
 
   // 로컬 스토리지에서 기존의 토큰을 가져오거나 null로 초기화
   const [token, setToken] = useState(() => {
