@@ -24,6 +24,7 @@ const AlbumPage = () => {
         <ControllerBar />
         <TrackList />
       </div>
+      {/* 더보기 */}
       <div>
         <div className="flex justify-between items-center text-white p-4">
           <Link
