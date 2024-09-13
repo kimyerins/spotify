@@ -6,7 +6,6 @@ module.exports = {
     'node_modules/flowbite/**/*.{js,jsx,ts,tsx}', // Flowbite의 경로
   ],
   theme: {
-    extend: {},
   },
   plugins: [
     require('flowbite/plugin'), // Flowbite 플러그인
