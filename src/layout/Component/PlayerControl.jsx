@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
 import {
@@ -6,8 +6,11 @@ import {
   usePlayTrack,
   usePauseTrack,
 } from "../../hooks/Player/usePlayer";
+import { useVolume, useSetVolume } from "../../hooks/Player/useVolume";
+import { debounce } from "lodash";
+import "./Player.css";
 
-const PlayerControl = () => {
+const PlayerControl = ({ visibleSection, setVisibleSection }) => {
   //const { token } = useSpotifyToken();
   const [token, setToken] = useState(() =>
     localStorage.getItem("spotifyToken")
@@ -20,9 +23,31 @@ const PlayerControl = () => {
     refetch: refetchPlayerState,
   } = usePlayerState(token);
   const [selectedDeviceId, setSelectedDeviceId] = useState(null);
-
   const playTrackMutation = usePlayTrack(token);
   const pauseTrackMutation = usePauseTrack(token);
+  const { data: currentVolume } = useVolume(token);
+  const mutation = useSetVolume();
+  const [volume, setVolume] = useState(0);
+  console.log("volume", volume);
+
+  useEffect(() => {
+    if (currentVolume !== undefined) {
+      setVolume(currentVolume);
+    }
+  }, [currentVolume]);
+
+  const debouncedSetVolume = useCallback(
+    debounce((newVolume) => {
+      mutation.mutate({ token, volume: newVolume });
+    }, 500),
+    [token]
+  );
+
+  const handleVolumeChange = (event) => {
+    const newVolume = event.target.value;
+    setVolume(newVolume);
+    debouncedSetVolume(newVolume);
+  };
 
   useEffect(() => {
     if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
@@ -133,7 +158,7 @@ const PlayerControl = () => {
   //console.log("player", playerState);
 
   return (
-    <div className="fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
+    <div className="control fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
       <div className="music_wrap flex items-center">
         <div className="album rounded-[5px] overflow-hidden w-[56px] h-[56x] mr-[8px]">
           <img src={playerState?.item.album.images[0]?.url} alt="album image" />
@@ -144,7 +169,7 @@ const PlayerControl = () => {
             {playerState?.item.artists[0].name}
           </p>
         </div>
-        <div className="add p-[8px]">
+        <div className="add btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -159,7 +184,7 @@ const PlayerControl = () => {
         </div>
       </div>
       <div className="control_wrap flex items-center">
-        <div className="shuffle p-[8px]">
+        <div className="shuffle btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -172,7 +197,7 @@ const PlayerControl = () => {
             <path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"></path>
           </svg>
         </div>
-        <div className="prev p-[8px]">
+        <div className="prev btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -216,7 +241,7 @@ const PlayerControl = () => {
             </div>
           )}
         </div>
-        <div className="next p-[8px]">
+        <div className="next btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -228,7 +253,7 @@ const PlayerControl = () => {
             <path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"></path>
           </svg>
         </div>
-        <div className="repeat p-[8px]">
+        <div className="repeat btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -242,7 +267,7 @@ const PlayerControl = () => {
         </div>
       </div>
       <div className="icon_wrap flex items-center">
-        <div className="npv p-[8px]">
+        <div className="npv btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -255,7 +280,7 @@ const PlayerControl = () => {
             <path d="M15.002 1.75A1.75 1.75 0 0 0 13.252 0h-10.5a1.75 1.75 0 0 0-1.75 1.75v12.5c0 .966.783 1.75 1.75 1.75h10.5a1.75 1.75 0 0 0 1.75-1.75V1.75zm-1.75-.25a.25.25 0 0 1 .25.25v12.5a.25.25 0 0 1-.25.25h-10.5a.25.25 0 0 1-.25-.25V1.75a.25.25 0 0 1 .25-.25h10.5z"></path>
           </svg>
         </div>
-        <div className="lyrics p-[8px]">
+        <div className="lyrics btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -267,7 +292,12 @@ const PlayerControl = () => {
             <path d="M13.426 2.574a2.831 2.831 0 0 0-4.797 1.55l3.247 3.247a2.831 2.831 0 0 0 1.55-4.797zM10.5 8.118l-2.619-2.62A63303.13 63303.13 0 0 0 4.74 9.075L2.065 12.12a1.287 1.287 0 0 0 1.816 1.816l3.06-2.688 3.56-3.129zM7.12 4.094a4.331 4.331 0 1 1 4.786 4.786l-3.974 3.493-3.06 2.689a2.787 2.787 0 0 1-3.933-3.933l2.676-3.045 3.505-3.99z"></path>
           </svg>
         </div>
-        <div className="queue p-[8px]">
+        <div
+          className={`queue btn p-[8px] ${
+            visibleSection === "playlist" ? "active" : ""
+          }`}
+          onClick={() => setVisibleSection("playlist")}
+        >
           <svg
             data-encore-id="icon"
             role="img"
@@ -279,7 +309,12 @@ const PlayerControl = () => {
             <path d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-7A2.5 2.5 0 0 1 3.5 1h9a2.5 2.5 0 0 1 0 5h-9A2.5 2.5 0 0 1 1 3.5zm2.5-1a1 1 0 0 0 0 2h9a1 1 0 1 0 0-2h-9z"></path>
           </svg>
         </div>
-        <div className="tertiary p-[8px]">
+        <div
+          className={`tertiary btn p-[8px] ${
+            visibleSection === "device" ? "active" : ""
+          }`}
+          onClick={() => setVisibleSection("device")}
+        >
           <svg
             data-encore-id="icon"
             role="img"
@@ -306,8 +341,16 @@ const PlayerControl = () => {
             <path d="M11.5 13.614a5.752 5.752 0 0 0 0-11.228v1.55a4.252 4.252 0 0 1 0 8.127v1.55z"></path>
           </svg>
         </div>
-        <div className="volimn-bar mr-[8px]"></div>
-        <div className="miniPlay p-[8px]">
+        <div className="volume-bar mr-[8px]">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+        </div>
+        <div className="miniPlay btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -320,7 +363,7 @@ const PlayerControl = () => {
             <path d="M15.25 9.007a.75.75 0 0 1 .75.75v4.493a.75.75 0 0 1-.75.75H9.325a.75.75 0 0 1-.75-.75V9.757a.75.75 0 0 1 .75-.75h5.925z"></path>
           </svg>
         </div>
-        <div className="fullScreen p-[8px]">
+        <div className="fullScreen btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
