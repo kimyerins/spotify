@@ -38,7 +38,7 @@ const Header = () => {
         <img
           src="../src/assets/2024 Spotify Brand Assets/Spotify_Primary_Logo_RGB_White.png"
           alt="spotify"
-          className="w-8 h-8 self-center ml-1"
+          className="min-w-8 h-8 self-center ml-1 mr-6"
         />
       </Link>
 
@@ -112,7 +112,7 @@ const Header = () => {
         {token ? (
           <div className="flex flex-col text-white relative" ref={dropdownRef}>
             <div
-              className="w-10 h-10 rounded-full cursor-pointer bg-white"
+              className="w-10 h-10 rounded-full cursor-pointer bg-white ml-6"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             />
             {isDropdownOpen && (

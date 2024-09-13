@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useSpotifyToken from "../../hooks/useSpotifyToken.jsx";
 
 const ProtectPage = ({ children }) => {
-  const { token, login } = useSpotifyToken(); // 토큰과 로그인 함수 가져오기
+  const { login } = useSpotifyToken(); // 로그인 함수 가져오기
+  const token = localStorage.getItem('spotifyToken')
   const navigate = useNavigate();
 
   useEffect(() => {
