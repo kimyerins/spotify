@@ -14,7 +14,7 @@ export const usePlayerState = (token) => {
   return useQuery({
     queryKey: ["player-state"],
     queryFn: () => fetchPlayerState(token),
-    select: (result) => result.data,
+    select: (result) => result.data || null,
     refetchInterval: 10000,
   });
 };
