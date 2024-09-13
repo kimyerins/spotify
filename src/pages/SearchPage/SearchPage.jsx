@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const SearchPage = () => {
     const token = localStorage.getItem("spotifyToken");
-    const { data, error, isLoading } = useCategoryQuery(token, 36);
+    const { data, error, isLoading } = useCategoryQuery(36);
     const [columns, setColumns] = useState(6);
     const containerRef = useRef(null);
 
