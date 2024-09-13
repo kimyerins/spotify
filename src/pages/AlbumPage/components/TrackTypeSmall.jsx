@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 
-const ChartItem = ({ type }) => {
+const TrackTypeSmall = ({ type }) => {
   // type 종류 : album, artist, playlist
-
   // 재생중인 노래 스타일 적용 필요
   // 더보기, hover 팝업 효과 만들기
-
   // 좋아요 표시한 곡인지
-  const [isLike, setisLike] = useState(false);
+  const [isLike, setisLike] = useState(true);
 
   return (
-    <div className="group flex items-center justify-between rounded-lg p-4 cursor-pointer transition duration-300 hover:bg-white/10">
+    <div className="group flex items-center justify-between rounded-lg px-4 py-1 cursor-pointer transition duration-300 hover:bg-white/10">
       {/* 재생 버튼 or 인덱스 번호 */}
       <div className="flex items-center space-x-4">
-        <div className="w-3 h-3 hidden group-hover:flex ml-[14px]">
+        <div className="w-3 h-3 hidden group-hover:flex ml-[12px]">
           <svg
             viewBox="-0.5 0 8 8"
             version="1.1"
@@ -51,40 +49,21 @@ const ChartItem = ({ type }) => {
             </g>
           </svg>
         </div>
-        <span className="text-lg font-bold text-[#afb5b5] flex group-hover:hidden">
+        <span className="text-base font-bold text-[#afb5b5] flex group-hover:hidden">
           1
         </span>
         {/* 앨범이미지 */}
-        <img
-          src="https://via.placeholder.com/50"
-          alt="Artist"
-          className="w-10 h-10 rounded-md"
-        />
+
         <div className="flex flex-col">
           <h2 className="text-base font-semibold text-white hover:underline">
             {/* 노래명 */}Song
           </h2>
-          {type === "album" ? (
-            <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-              {/* 아티스트명 */}아이유
-            </p>
-          ) : (
-            ""
-          )}
         </div>
       </div>
 
-      {type === "playlist" ? (
+      {type === "album" ? (
         <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-          {/* 앨범 */}복숭아
-        </p>
-      ) : (
-        ""
-      )}
-
-      {type === "playlist" ? (
-        <p className="text-sm text-gray-300">
-          {/* 추가한 날짜 */}20nn년 1월 5일
+          {/* 앨범 아티스트 */}복숭아
         </p>
       ) : (
         ""
@@ -191,4 +170,4 @@ const ChartItem = ({ type }) => {
   );
 };
 
-export default ChartItem;
+export default TrackTypeSmall;

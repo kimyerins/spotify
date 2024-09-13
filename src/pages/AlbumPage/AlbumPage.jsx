@@ -4,8 +4,14 @@ import Card from "../../common/Card";
 import { Link } from "react-router-dom";
 import ControllerBar from "./components/ControllerBar";
 import TrackList from "./components/TrackList";
+import { useState } from "react";
 
 const AlbumPage = () => {
+  const [viewOption, setViewOption] = useState("small"); // 보기를 small or list로 설정
+  const viewOptionBox = {
+    viewOption: viewOption,
+    setViewOption: setViewOption,
+  };
   return (
     <div
       className={`w-[100%]  bg-cover self-stretch h-[100%]   rounded-md bg-[#283423] bg-gradient-to-b from-transparent to-black`} //배경색상은 동적으로 변경할 예정.
@@ -21,8 +27,8 @@ const AlbumPage = () => {
       </div>
       {/* 트랙리스트 섹션 */}
       <div className="p-4">
-        <ControllerBar />
-        <TrackList />
+        <ControllerBar viewOptionBox={viewOptionBox} />
+        <TrackList viewOptionBox={viewOptionBox} />
       </div>
       {/* 더보기 */}
       <div>

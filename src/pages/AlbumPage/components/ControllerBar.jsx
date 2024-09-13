@@ -5,10 +5,10 @@ import RadioButton from "../../../assets/images/RadioButton.svg?react";
 import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
 import ViewOptionBox from "./ViewOptionBox";
 
-const ControllerBar = () => {
+const ControllerBar = ({ viewOptionBox }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
   const [isViewOptionOpen, setIsViewOptionOpen] = useState(false); // 보기 옵션이 열려있는지 여부
-  const [viewOption, setViewOption] = useState("small"); // 보기를 small or list로 설정
+  const { viewOption, setViewOption } = viewOptionBox;
   const viewOptionState = {
     viewOption: viewOption,
     setViewOption: setViewOption,
@@ -164,7 +164,7 @@ const ControllerBar = () => {
           setIsViewOptionOpen(!isViewOptionOpen);
         }}
       >
-        {viewOption == "smal" ? (
+        {viewOption == "small" ? (
           <div className="flex items-center gap-1 relative">
             <span className="group-hover:text-white">작게</span>
             {/* 햄버거버튼 */}

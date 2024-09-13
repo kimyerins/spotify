@@ -1,16 +1,18 @@
-import React from "react";
-import TrackListCard from "../../../common/InfoCard/TrackListCard";
-import ChartItem from "../../../common/ChartItem";
+import { useState } from "react";
+import TrackTypeList from "./TrackTypeList";
+import TrackTypeSmall from "./TrackTypeSmall";
 
-const TrackList = () => {
+const TrackList = ({ viewOptionBox }) => {
+  const { viewOption, setViewOption } = viewOptionBox;
   return (
     <div className="text-white m-3">
-      <div className="flex justify-between pl-4 pr-10 pb-2 border-b opacity-70">
-        <div className="flex gap-4 ">
+      <div className="flex justify-between px-4  pb-2 border-b opacity-70 ">
+        <div className="flex gap-4 ml-5 ">
           <span>#</span>
           <span>제목</span>
         </div>
-        <div className="">
+        {viewOption == "small" && <div>아티스트</div>}
+        <div className="w-[114px] flex justify-center">
           <span>
             <svg
               className="w-6 h-6 text-white dark:text-white"
@@ -33,14 +35,23 @@ const TrackList = () => {
         </div>
       </div>
       {/* 트랙리스트 */}
-      <div className="p-1">
-        <ChartItem />
-        <ChartItem />
-        <ChartItem />
-        <ChartItem />
-        <ChartItem />
-        <ChartItem />
-      </div>
+      {viewOption == "list" ? (
+        <div className="p-1">
+          <TrackTypeList type="album" />
+          <TrackTypeList type="album" />
+          <TrackTypeList type="album" />
+          <TrackTypeList type="album" />
+        </div>
+      ) : (
+        <div className="p-1">
+          <TrackTypeSmall type="album" />
+          <TrackTypeSmall type="album" />
+          <TrackTypeSmall type="album" />
+          <TrackTypeSmall type="album" />
+          <TrackTypeSmall type="album" />
+          <TrackTypeSmall type="album" />
+        </div>
+      )}
     </div>
   );
 };

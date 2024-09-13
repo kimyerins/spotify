@@ -20,7 +20,7 @@ const ViewOptionBox = ({ viewOptionState }) => {
         >
           <div className="flex items-center gap-1">
             <svg
-              class={`w-6 h-6 text-[#fff]  dark:text-white 
+              class={`w-6 h-6   dark:text-white 
                  ${viewOption == "small" ? "text-[#1ED760]" : "text-[#fff]"}
                 
                 `}
@@ -43,7 +43,7 @@ const ViewOptionBox = ({ viewOptionState }) => {
             </span>
           </div>
           <svg
-            className={`w-6 h-6 text-white dark:text-white
+            className={`w-6 h-6  dark:text-white
                 ${viewOption == "small" ? "text-[#1ED760]" : "text-[#fff]"}`}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
