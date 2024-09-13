@@ -127,7 +127,7 @@ const Header = () => {
       <div className="flex text-white self-center">
         {token ? (
           <div className="flex justify-center gap-4">
-            <div className="flex justify-center self-center text-sm font-semibold gap-1 transform hover:scale-105 cursor-pointer hover:underline">
+            <a href="https://www.spotify.com/kr-ko/download/windows/" className="flex justify-center self-center text-sm font-semibold gap-1 transform hover:scale-105 cursor-pointer hover:underline">
               <svg className="w-5 h-5 self-center" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="SVGRepo_bgCarrier" stroke-width="5" />
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
@@ -137,7 +137,7 @@ const Header = () => {
                 </g>
               </svg>
               앱 설치하기
-            </div>
+            </a>
             <svg data-tooltip-id="feed-tooltip" data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16"
               fill={location.pathname === 'content-feed' ? 'white' : ''}
               stroke={location.pathname === 'content-feed' ? '' : '#b3b3b3'}
