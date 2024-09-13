@@ -3,6 +3,9 @@ import Header from "./Component/Header";
 import MyPlaylist from "./Component/MyPlaylist/MyPlaylist.jsx";
 import PlayerControl from "./Component/PlayerControl";
 import './Layout.style.css'
+import {Footer} from "flowbite-react";
+import CustomFooter from "./Component/CustomFooter.jsx";
+import React from "react";
 
 const Layout = () => {
   return (
@@ -18,6 +21,7 @@ const Layout = () => {
            mx-2 p-3 bg-[#121212] justify-center rounded-[10px] overflow-hidden 
            hover:overflow-y-auto custom-scrollbar">
             <Outlet /> {/* URL에 따라 여기에 컴포넌트가 렌더링됨 */}
+            <CustomFooter/>
           </main>
         </div>
         <PlayerControl />

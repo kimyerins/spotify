@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./layout/Layout.jsx";
@@ -14,6 +13,8 @@ import ProtectPage from "./layout/Component/ProtectPage.jsx";
 import SearchResultPage from "./pages/SearchResultPage/SearchResultPage.jsx";
 
 function App() {
+
+
   return (
     <>
       <Provider store={store}>
