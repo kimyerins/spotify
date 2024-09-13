@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-const ChartItem = ({ type }) => {
-    // type 종류 : album, artist, playlist
+const ChartItem = ({ item, type, index }) => {
+    // type 종류 : album, artist, playlist, search
 
     // 재생중인 노래 스타일 적용 필요
     // 더보기, hover 팝업 효과 만들기
@@ -9,11 +9,21 @@ const ChartItem = ({ type }) => {
     // 좋아요 표시한 곡인지
     const [isLike, setisLike] = useState(false);
 
+    function msToTimeFormat(ms) {
+        const minutes = Math.floor(ms / 60000); // 밀리초를 분으로 변환
+        const seconds = Math.floor((ms % 60000) / 1000); // 나머지 밀리초를 초로 변환
+
+        // 초가 10보다 작으면 앞에 0을 추가하여 2자리로 만들기
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+        return `${minutes}:${formattedSeconds}`;
+    }
+
     return (
-        <div className="group flex items-center justify-between rounded-lg p-4 cursor-pointer transition duration-300 hover:bg-white/10">
+        <div className="group flex items-center justify-between rounded-lg p-2 cursor-pointer transition duration-300 hover:bg-white/10">
             {/* 재생 버튼 or 인덱스 번호 */}
-            <div className="flex items-center space-x-4">
-                <div className='w-3 h-3 hidden group-hover:flex ml-[14px]'>
+            <div className='flex items-center'>
+                <div className={`w-3 h-3 hidden ml-[14px] ${type === 'search' ? '' : 'group-hover:flex'}`}>
                     <svg viewBox="-0.5 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff">
                         <g id="SVGRepo_bgCarrier" strokeWidth="0" />
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
@@ -28,24 +38,24 @@ const ChartItem = ({ type }) => {
                         </g>
                     </svg>
                 </div>
-                <span className="text-lg font-bold text-[#afb5b5] flex group-hover:hidden">1</span>
+                <span className={`text-lg font-bold text-[#afb5b5] flex group-hover:hidden ${type === 'search' ? 'hidden' : ''}`}>{index}</span>
                 {/* 앨범이미지 */}
                 <img
-                    src="https://via.placeholder.com/50"
+                    src={item.album.images[0].url}
                     alt="Artist"
-                    className="w-10 h-10 rounded-md"
+                    className="w-10 h-10 rounded-md mr-3"
                 />
                 <div className='flex flex-col'>
-                    <h2 className="text-base font-semibold text-white hover:underline">{/* 노래명 */}Song</h2>
-                    {type === 'album'
-                        ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{/* 아티스트명 */}아이유</p>
+                    <h2 className="text-base text-white hover:underline">{item.name}</h2>
+                    {type === 'album' || type === 'search'
+                        ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.artists[0].name}</p>
                         : ''
                     }
                 </div>
             </div>
 
             {type === 'playlist'
-                ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{/* 앨범 */}복숭아</p>
+                ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.album.name}</p>
                 : ''
             }
 
@@ -55,7 +65,7 @@ const ChartItem = ({ type }) => {
             }
 
             {type === 'artist'
-                ? <p className="text-sm text-gray-300 group-hover:text-white">{/* 재생수 */}45,233,853</p>
+                ? <p className="text-sm text-gray-300 group-hover:text-white">{item?.playcount}</p>
                 : ''
             }
 
@@ -82,7 +92,7 @@ const ChartItem = ({ type }) => {
                 }
 
 
-                <span className="text-sm text-gray-300 mr-3">{/* 곡 길이 */}2:00</span>
+                <span className="text-sm text-gray-300 mr-3">{msToTimeFormat(item.duration_ms)}</span>
 
                 {/* 더보기 버튼 */}
                 <div className='w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
