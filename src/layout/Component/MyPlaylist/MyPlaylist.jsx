@@ -58,7 +58,7 @@ const MyPlaylist = () => {
 };
 
     return(
-    <div className={'min-w-[340px] mx-2 p-3 bg-[#121212] rounded-[10px]'}>
+    <div className={'h-[calc(100vh-140px)] min-w-[340px] mx-2 p-3 bg-[#121212] rounded-[10px]'}>
         <header className={'text-[rgb(105,105,105)]'}>
             <div className={'flex flex-row max-h-14'}>
                 <div className={'p-1 basis-1/2'}>
@@ -113,7 +113,7 @@ const MyPlaylist = () => {
                 </button>
             </div>
         </header>
-        <div className={'mt-4'}>
+        <div className={'mt-4 h-[calc(100vh-275px)] rounded-b-[15px] overflow-hidden hover:overflow-y-auto custom-scrollbar'}>
             <div className={'flex relative items-center'}>
                 <input
                     type={'text'}
@@ -147,7 +147,9 @@ const MyPlaylist = () => {
                 </button>
             </div>
             <div>
-                <Playlist/>
+                {data && data.map((item, index)=>(
+                    <Playlist key={index} data={item}/>
+                ))}
             </div>
         </div>
     </div>

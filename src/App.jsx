@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./layout/Layout.jsx";
 import HomePage from "./pages/HomePage/HomePage";
 import SearchPage from "./pages/SearchPage/SearchPage";
+import AlbumPage from "./pages/AlbumPage/AlbumPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import DetailPage from "./pages/DetailPage/DetailPage";
 import ArtistInfoPage from "./pages/DetailPage/ArtistInfoPage";
@@ -28,6 +29,7 @@ function App() {
             <Route path="search" index element={<SearchPage />} />
             <Route path="detail/:type/:id" element={<DetailPage />} />
             <Route path="detail/ArtistInfoPage" element={<ArtistInfoPage />} />
+            <Route path="detail/AlbumPage" element={<AlbumPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
