@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store.jsx";
 import ProtectPage from "./layout/Component/ProtectPage.jsx";
 import SearchResultPage from "./pages/SearchResultPage/SearchResultPage.jsx";
+import SearchResultCategoryPage from "./pages/SearchResultPage/SearchResultCategoryPage.jsx";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="detail/artist/:id" element={<ArtistInfoPage />} />
             <Route path="detail/album/:id" element={<AlbumPage />} />
             <Route path="search/:keyword" element={<SearchResultPage />} />
+            <Route path="search/:keyword/:category" element={<SearchResultCategoryPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

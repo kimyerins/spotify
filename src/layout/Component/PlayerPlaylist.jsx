@@ -5,6 +5,7 @@ import {
   usePlayerQueue,
 } from "../../hooks/Player/userPlayerPlaying";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
+import "./PlayerPlayList.style.css";
 
 const PlayerPlaylist = ({ visibleSection }) => {
   const { token } = useSpotifyToken();
@@ -39,7 +40,10 @@ const PlayerPlaylist = ({ visibleSection }) => {
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] min-w-[320px] mx-2 bg-[#121212] rounded-[10px] overflow-y-scroll">
+    <div
+      className="h-[calc(100vh-140px)] min-w-[320px] mx-2 bg-[#121212] rounded-[10px] overflow-hidden 
+    hover:overflow-y-auto custom-scrollbar"
+    >
       {visibleSection === "playlist" && (
         <div className="playingBox">
           <div className="tit_wrap px-[16px]">
@@ -113,7 +117,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
           {devicesQuery?.data && (
             <div>
               <div className="tit_wrap px-[16px]">
-                <div className="flex justify-between items-center py-[8px]">
+                <div className="flex justify-between items-center py-[8px] h-16">
                   <h3 className="text-white text-[16px] font-bold">
                     기기에 연결하기
                   </h3>
@@ -131,8 +135,25 @@ const PlayerPlaylist = ({ visibleSection }) => {
                   </div>
                 </div>
               </div>
-              <div className="cont_wrap">
-                <h3 className="text-white text-[24px]">현재 기기</h3>
+              <div className="cont_wrap px-[12px]">
+                <div className="activeDevice rounded-lg py-4 px-3">
+                  <div className="flex items-center">
+                    <div className="imgbox w-[24x] h-[24px] mr-[8px]">
+                      <img
+                        className="w-[24x] h-[24px]"
+                        src="https://open.spotifycdn.com/cdn/images/device-picker-equaliser-animation.946e7243.webp"
+                        alt="playing"
+                      />
+                    </div>
+                    <h3 className="text-white text-[24px] font-bold">
+                      현재 기기
+                    </h3>
+                  </div>
+                  <p className="text-white text-[16px]">{activeDevice?.name}</p>
+                </div>
+                <h3 className="text-white text-[16px] font-bold">
+                  다른 기기 선택
+                </h3>
                 <p className="text-white text-[16px]">{activeDevice?.name}</p>
               </div>
             </div>
