@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import { useUserInfo } from "../../hooks/useUserInfo.jsx";
 import { userInfoActions } from "../../redux/reducer/userInfoSlice.jsx";
 import './Homepage.style.css';
@@ -42,9 +42,11 @@ const HomePage = () => {
   const randomIds = getRandomItems(artistsArray, 10).join(',');
 
   const dispatch = useDispatch();
-  const {data:genre} = useGenreSeeds();
+  let {data:genre} = useGenreSeeds();
 
+  genre = useSelector((state)=>state.homepage.genre)
 
+  console.log('',genre);
 
   const defaultGenre = ['k-pop']
   const randomGenre=()=>{

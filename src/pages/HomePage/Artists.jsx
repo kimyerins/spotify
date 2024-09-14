@@ -1,11 +1,14 @@
 import React from 'react';
 import {useArtists} from "../../hooks/useArtists.js";
 import Card from "../../common/Card.jsx";
+import {useSelector} from "react-redux";
 
 const Recommend = (item) => {
 
 
-    const {data} = useArtists(item.data)
+    let {data} = useArtists(item.data)
+
+    data = useSelector((state)=>state.homepage.artists)
 
     console.log('item',data);
     return (

@@ -1,9 +1,16 @@
 import React from 'react';
 import Card from "../../common/Card.jsx";
-import {useRecommendTrack} from "../../hooks/useRecomendTracks.js";;
+import {useRecommendTrack} from "../../hooks/useRecomendTracks.js";
+import {useSelector} from "react-redux";
+
+;
 
 const Recommend = ({data}) => {
-    const {data:recommend,isLoading} = useRecommendTrack(data)
+    let {data:recommend,isLoading} = useRecommendTrack(data)
+
+    recommend = useSelector((state)=> state.homepage.tracks)
+
+    console.log('tttttt',recommend)
 
     const getRandom = (recommend) => {
         if (!recommend || recommend.length === 0) return [];
@@ -15,6 +22,10 @@ const Recommend = ({data}) => {
     };
 
     if(isLoading){
+        return '';
+    }
+
+    if(Object.keys(recommend).length===0){
         return '';
     }
 
