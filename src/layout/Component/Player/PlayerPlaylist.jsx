@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import useSpotifyToken from "../../hooks/useSpotifyToken";
+import useSpotifyToken from "../../../hooks/useSpotifyToken";
 import {
   usePlayerPlaying,
   usePlayerQueue,
-} from "../../hooks/Player/userPlayerPlaying";
-import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
+} from "../../../hooks/Player/userPlayerPlaying";
+import { usePlayerDevices } from "../../../hooks/Player/usePlayerDevices";
 import "./PlayerPlayList.style.css";
 
 const PlayerPlaylist = ({ visibleSection }) => {
@@ -154,6 +154,14 @@ const PlayerPlaylist = ({ visibleSection }) => {
                 <h3 className="text-white text-[16px] font-bold">
                   다른 기기 선택
                 </h3>
+                {devicesQuery.data.devices.map(
+                  (device) =>
+                    device.id !== activeDevice?.id && (
+                      <li key={device.id} className="text-white text-[14px]">
+                        {device.name} {device.is_active ? "(Active)" : ""}
+                      </li>
+                    )
+                )}
                 <p className="text-white text-[16px]">{activeDevice?.name}</p>
               </div>
             </div>

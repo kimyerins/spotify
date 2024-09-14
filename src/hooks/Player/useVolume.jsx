@@ -26,6 +26,7 @@ export const useVolume = (token) => {
   return useQuery({
     queryKey: ["volume"],
     queryFn: () => fetchVolume(token),
+    retry: false,
   });
 };
 
@@ -33,5 +34,6 @@ export const useVolume = (token) => {
 export const useSetVolume = () => {
   return useMutation({
     mutationFn: setVolume,
+    retry: false,
   });
 };
