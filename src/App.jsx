@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store.jsx";
 import ProtectPage from "./layout/Component/ProtectPage.jsx";
 import SearchResultPage from "./pages/SearchResultPage/SearchResultPage.jsx";
+import SearchResultCategoryPage from "./pages/SearchResultPage/SearchResultCategoryPage.jsx";
 
 function App() {
 
@@ -30,9 +31,10 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="search" index element={<SearchPage />} />
             <Route path="detail/:type/:id" element={<DetailPage />} />
-            <Route path="detail/ArtistInfoPage" element={<ArtistInfoPage />} />
-            <Route path="detail/AlbumPage" element={<AlbumPage />} />
+            <Route path="detail/artist/:id" element={<ArtistInfoPage />} />
+            <Route path="detail/album/:id" element={<AlbumPage />} />
             <Route path="search/:keyword" element={<SearchResultPage />} />
+            <Route path="search/:keyword/:category" element={<SearchResultCategoryPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

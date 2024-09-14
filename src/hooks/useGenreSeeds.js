@@ -3,10 +3,8 @@ import api from "../utils/useApi.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {homepageActions} from "../redux/reducer/homepageSlice.jsx";
 
-
-
 const fetchGenreSeeds = async () => {
-        return api.get(`/recommendations/available-genre-seeds`);
+  return api.get(`/recommendations/available-genre-seeds`);
 };
 
 export const useGenreSeeds = () => {
