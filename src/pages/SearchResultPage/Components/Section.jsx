@@ -1,7 +1,7 @@
 import Card from '../../../common/Card';
 import React from 'react'
 
-const Section = ({type, items, count}) => {
+const Section = ({ type, items, count }) => {
   return (
     <div className='w-full'>
       <h2 className='text-2xl mb-2 text-white font-bold'>{type}</h2>
@@ -13,6 +13,7 @@ const Section = ({type, items, count}) => {
               title={item.name}
               subTitle={type}
               imgUrl={item.images[0]?.url}
+              imgShape={type === '아티스트' ? 'circle' : ''}
             />
           ))}
         </div>
