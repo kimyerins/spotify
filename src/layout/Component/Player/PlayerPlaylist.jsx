@@ -15,9 +15,6 @@ const PlayerPlaylist = ({ visibleSection }) => {
   const activeDevice = devicesQuery.data?.devices?.find(
     (device) => device.is_active
   );
-  console.log("queueQuery", queueQuery);
-  console.log("devicesQuery", devicesQuery);
-  console.log("activeDevice", activeDevice);
 
   useEffect(() => {
     if (visibleSection === "playlist") {
@@ -67,7 +64,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
             <div className="p-[16px]">
               <h3 className="text-white">현재 재생 중</h3>
               <div className="flex p-[8px] mb-[24px]">
-                <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
+                <div className="imgbox min-w-[48px] min-h-[48px]  max-h-[48px] max-w-[48px] mr-[8px] overflow-hidden">
                   <img
                     className="rounded-[5px]"
                     src={
@@ -90,7 +87,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
               <ul>
                 {queueQuery?.data.queue.slice(0, 12).map((track, index) => (
                   <li key={index} className="text-white flex p-[8px]">
-                    <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
+                    <div className="imgbox min-w-[48px] min-h-[48px]  max-w-[48px] max-h-[48px] mr-[8px] overflow-hidden">
                       <img
                         className="rounded-[5px]"
                         src={track?.album?.images?.[0]?.url}

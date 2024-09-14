@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useVolume, useSetVolume } from "../../../hooks/Player/useVolume";
 import { usePlayerState } from "../../../hooks/Player/usePlayer";
@@ -17,7 +17,7 @@ const PlayerRightControl = ({
   const [volume, setVolume] = useState(0);
   const { data: playerState, refetch: refetchPlayerState } =
     usePlayerState(token);
-  console.log("volume", volume);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     if (currentVolume !== undefined) {
@@ -25,17 +25,28 @@ const PlayerRightControl = ({
     }
   }, [currentVolume]);
 
+  useEffect(() => {
+    updateSliderProgress();
+  }, [volume]);
+
   const debouncedSetVolume = useCallback(
     debounce((newVolume) => {
       mutation.mutate({ token, volume: newVolume });
     }, 500),
-    [token]
+    [token, mutation]
   );
 
   const handleVolumeChange = (event) => {
-    const newVolume = event.target.value;
+    const newVolume = parseFloat(event.target.value);
     setVolume(newVolume);
     debouncedSetVolume(newVolume);
+  };
+
+  const updateSliderProgress = () => {
+    if (sliderRef.current) {
+      const progress = volume * 100;
+      sliderRef.current.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${progress}%, #535353 ${progress}%, #535353 100%)`;
+    }
   };
   useEffect(() => {
     if (playerState) {
@@ -123,9 +134,10 @@ const PlayerRightControl = ({
         <div className="volume-bar mr-[8px]">
           <input
             type="range"
-            min="0"
-            max="100"
+            min={0}
+            max={100}
             value={volume}
+            className="range-slider"
             onChange={handleVolumeChange}
           />
         </div>

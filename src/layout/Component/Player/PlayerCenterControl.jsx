@@ -19,7 +19,6 @@ const PlayerCenterControl = () => {
   const skipToNextMutation = useSkipToNext(token);
   const skipToPreviousMutation = useSkipToPrevious(token);
   const { position, handleSeekChange, handleSeek } = useSeekBar(token);
-  console.log("selectedDeviceId", selectedDeviceId);
 
   useEffect(() => {
     if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
@@ -56,6 +55,7 @@ const PlayerCenterControl = () => {
         const currentTrack = playerState?.item;
         const progress = playerState?.progress_ms || 0;
         let playParams = {
+          device_id: selectedDeviceId,
           position_ms: progress,
         };
 
@@ -78,10 +78,7 @@ const PlayerCenterControl = () => {
           deviceData: selectedDeviceId,
           ...playParams,
         });
-        console.log("재생 시작", {
-          deviceData: selectedDeviceId,
-          ...playParams,
-        });
+        console.log("재생 시작", playParams);
         console.log("재생 결과:", playResult);
       }
 

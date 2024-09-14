@@ -39,13 +39,7 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
   return (
     <div className="control fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
       <PlayerAlbum token={token} playerState={playerState} />
-      <PlayerCenterControl
-        selectedDeviceId={selectedDeviceId}
-        deviceData={deviceData}
-        refetchDevices={refetchDevices}
-        playerState={playerState}
-        refetchPlayerState={refetchPlayerState}
-      />
+      <PlayerCenterControl />
       <PlayerRightControl
         currentVolume={currentVolume}
         visibleSection={visibleSection}
