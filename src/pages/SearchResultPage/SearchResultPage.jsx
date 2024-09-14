@@ -56,7 +56,8 @@ const SearchResultPage = () => {
     // 버튼 클릭 시 카테고리 상태 업데이트
     const handleCategoryChange = (newCategory) => {
         setCategory(newCategory);
-        navigate(`/search/${keyword}/${newCategory}`);
+        if (newCategory === 'all') navigate(`/search/${keyword}`);
+        else navigate(`/search/${keyword}/${newCategory}`);
     };
 
     return (
