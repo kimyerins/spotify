@@ -62,8 +62,8 @@ const PlayerPlaylist = ({ visibleSection }) => {
           {queueQuery?.data?.queue ? (
             <div className="p-[16px]">
               <h3 className="text-white">현재 재생 중</h3>
-              <div className="flex">
-                <div className="imgbox">
+              <div className="flex p-[8px] mb-[24px]">
+                <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
                   <img
                     className="rounded-[5px]"
                     src={

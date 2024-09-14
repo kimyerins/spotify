@@ -23,11 +23,19 @@ export const usePlayerState = (token) => {
 };
 
 // 트랙 재생 API
-const playTrack = async ({ token, deviceData, context_uri, uris, offset }) => {
+const playTrack = async ({
+  token,
+  deviceData,
+  context_uri,
+  uris,
+  offset,
+  position_ms,
+}) => {
   const payload = {};
   if (context_uri) payload.context_uri = context_uri;
   if (uris) payload.uris = uris;
   if (offset) payload.offset = offset;
+  if (position_ms) payload.position_ms = position_ms;
   return api.put(`/me/player/play?device_id=${deviceData}`, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -36,14 +44,14 @@ const playTrack = async ({ token, deviceData, context_uri, uris, offset }) => {
   });
 };
 
-export const usePlayTrack = (token) => {
+export const usePlayTrack = () => {
   return useMutation({
-    mutationFn: (params) => playTrack({ ...params, token }),
+    mutationFn: (params) => playTrack(params),
     onSuccess: () => {
       console.log("트랙이 성공적으로 재생되었습니다.");
     },
     onError: (error) => {
-      console.error("트랙 재생 중 오류 발생:", error);
+      console.error("트랙 재생 중 오류 발생:", error.response?.data || error);
     },
   });
 };

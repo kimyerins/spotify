@@ -24,7 +24,7 @@ export const usePlayerPlaying = (token) => {
   return useQuery({
     queryKey: ["playing-list"],
     queryFn: () => fetchPlayinglist(token),
-    enabled: false, // 기본적으로 쿼리가 비활성화됨
+    enabled: false,
   });
 };
 
@@ -32,6 +32,8 @@ export const usePlayerQueue = (token) => {
   return useQuery({
     queryKey: ["player-queue"],
     queryFn: () => fetchPlaylistWithQueue(token),
-    enabled: false, // 쿼리가 수동으로 트리거되도록 설정
+    enabled: false,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 };

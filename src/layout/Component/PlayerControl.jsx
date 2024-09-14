@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
 import useSpotifyToken from "../../hooks/useSpotifyToken";
 import {
@@ -6,22 +7,21 @@ import {
   usePlayTrack,
   usePauseTrack,
 } from "../../hooks/Player/usePlayer";
+import { useSkipToNext } from "../../hooks/Player/useSkipToNext";
+import { useSkipToPrevious } from "../../hooks/Player/useSkipToPrev";
 import { useVolume, useSetVolume } from "../../hooks/Player/useVolume";
+import { usePlayerQueue } from "../../hooks/Player/userPlayerPlaying";
 import { debounce } from "lodash";
 import "./Player.css";
 
 const PlayerControl = ({ visibleSection, setVisibleSection }) => {
-  //const { token } = useSpotifyToken();
+  const queryClient = useQueryClient();
   const [token, setToken] = useState(() =>
     localStorage.getItem("spotifyToken")
   );
   const { data: deviceData, refetch: refetchDevices } = usePlayerDevices(token);
-  const {
-    data: playerState,
-    isLoading,
-    error,
-    refetch: refetchPlayerState,
-  } = usePlayerState(token);
+  const { data: playerState, refetch: refetchPlayerState } =
+    usePlayerState(token);
   const [selectedDeviceId, setSelectedDeviceId] = useState(null);
   const playTrackMutation = usePlayTrack(token);
   const pauseTrackMutation = usePauseTrack(token);
@@ -29,6 +29,9 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
   const mutation = useSetVolume();
   const [volume, setVolume] = useState(0);
   console.log("volume", volume);
+  const skipToNextMutation = useSkipToNext(token);
+  const skipToPreviousMutation = useSkipToPrevious(token);
+  const queueQuery = usePlayerQueue(token);
 
   useEffect(() => {
     if (currentVolume !== undefined) {
@@ -49,6 +52,14 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
     debouncedSetVolume(newVolume);
   };
 
+  const handleNextTrack = () => {
+    skipToNextMutation.mutate({ deviceData });
+  };
+
+  const handlePreviousTrack = () => {
+    skipToPreviousMutation.mutate({ deviceData });
+  };
+
   useEffect(() => {
     if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
       setSelectedDeviceId(deviceData.devices[0].id);
@@ -58,26 +69,22 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
     const refreshDevicesInterval = setInterval(() => {
       refetchDevices();
     }, 10000); // 10초마다 디바이스 목록 갱신
-
     return () => clearInterval(refreshDevicesInterval);
   }, [refetchDevices]);
+  useEffect(() => {
+    if (playerState) {
+      queryClient.invalidateQueries("player-queue");
+    }
+  }, [playerState, queryClient]);
 
-  if (isLoading) {
-    console.log("플레이어 상태를 불러오는 중...");
-    return null;
-  }
-  if (error) {
-    console.log("플레이어 상태를 로드하는 중에 오류가 발생했습니다.");
-    return null;
-  }
   if (!playerState) {
     console.log("현재 재생중인 곡이 없습니다.");
   }
-
   const handlePlayPause = async () => {
+    console.log("현재 플레이어 상태:", playerState);
     if (!token || !selectedDeviceId) {
       console.log("토큰 또는 선택된 디바이스가 없습니다.");
-      await deviceData();
+      await refetchDevices();
       return;
     }
 
@@ -94,17 +101,16 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
         const currentTrack = playerState?.item;
         const progress = playerState?.progress_ms || 0;
         let playParams = {
-          device_id: selectedDeviceId,
           position_ms: progress,
         };
 
-        if (context) {
+        if (context && context.uri) {
           // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
           playParams.context_uri = context.uri;
-          if (currentTrack) {
+          if (currentTrack && currentTrack.uri) {
             playParams.offset = { uri: currentTrack.uri };
           }
-        } else if (currentTrack) {
+        } else if (currentTrack && currentTrack.uri) {
           // 단일 트랙인 경우
           playParams.uris = [currentTrack.uri];
         } else {
@@ -112,8 +118,15 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
           return;
         }
 
-        const playResult = await playTrackMutation.mutateAsync(playParams);
-        console.log("재생 시작", playParams);
+        const playResult = await playTrackMutation.mutateAsync({
+          token,
+          deviceData: selectedDeviceId,
+          ...playParams,
+        });
+        console.log("재생 시작", {
+          deviceData: selectedDeviceId,
+          ...playParams,
+        });
         console.log("재생 결과:", playResult);
       }
 
@@ -123,39 +136,8 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
       }, 500); // 500ms 후에 상태 갱신
     } catch (error) {
       console.error("재생/일시정지 중 오류 발생:", error);
-      if (error.response) {
-        console.error("에러 응답:", error.response.data);
-        console.error("에러 상태:", error.response.status);
-        console.error("에러 헤더:", error.response.headers);
-
-        if (error.response.status === 400) {
-          console.error("400 Bad Request 에러: 요청에 문제가 있습니다.");
-          console.error("요청 파라미터:", {
-            deviceId: selectedDeviceId,
-            context: playerState?.context,
-            currentTrack: playerState?.item,
-          });
-
-          // 디바이스 목록 갱신
-          await refetchDevices();
-        } else if (error.response.status === 401) {
-          console.error(
-            "401 Unauthorized 에러: 토큰이 만료되었거나 유효하지 않습니다."
-          );
-          // 여기에 토큰 갱신 또는 재로그인 로직을 추가할 수 있습니다.
-        }
-      } else if (error.request) {
-        console.error(
-          "요청이 전송되었지만 응답을 받지 못했습니다:",
-          error.request
-        );
-      } else {
-        console.error("에러 메시지:", error.message);
-      }
     }
   };
-
-  //console.log("player", playerState);
 
   return (
     <div className="control fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
@@ -197,7 +179,7 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
             <path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"></path>
           </svg>
         </div>
-        <div className="prev btn p-[8px]">
+        <div onClick={handlePreviousTrack} className="prev btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
@@ -241,7 +223,7 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
             </div>
           )}
         </div>
-        <div className="next btn p-[8px]">
+        <div onClick={handleNextTrack} className="next btn p-[8px]">
           <svg
             data-encore-id="icon"
             role="img"
