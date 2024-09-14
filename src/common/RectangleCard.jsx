@@ -9,7 +9,7 @@ const RectangleCard = ({genre, imgSrc, index}) => {
   return (
     <div className="relative text-white p-4 rounded-lg w-full aspect-video overflow-hidden"
          style={{ backgroundColor: color }}>
-      <span className="text-2xl font-bold absolute top-4 left-4 z-1">
+      <span className="text-2xl font-bold absolute top-4 left-4 z-10">
         {genre}
       </span>
       <img
