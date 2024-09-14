@@ -22,7 +22,7 @@ const Layout = () => {
         <div className="flex flex-col w-full">
           {/* 동적으로 바뀌는 부분 */}
           <main
-            className="flex-grow flex-col flex h-[calc(100vh-140px)] w-fullmin-w-[600px]
+            className="flex-grow h-[calc(100vh-140px)] w-full min-w-[600px]
            mx-2 p-3 bg-[#121212] justify-center rounded-[10px] overflow-hidden 
            hover:overflow-y-auto custom-scrollbar"
           >
