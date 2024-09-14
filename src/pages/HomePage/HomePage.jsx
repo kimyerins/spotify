@@ -6,7 +6,6 @@ import './Homepage.style.css';
 import {useGenreSeeds} from "../../hooks/useGenreSeeds.js";
 import Recommend from "./Recommend.jsx";
 import Artists from "./Artists.jsx";
-import CustomFooter from "../../layout/Component/CustomFooter.jsx";
 
 const HomePage = () => {
 
