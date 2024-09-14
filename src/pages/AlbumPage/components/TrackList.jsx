@@ -37,14 +37,28 @@ const TrackList = ({ viewOptionBox, albumData }) => {
       {/* 트랙리스트 */}
       {viewOption == "list" ? (
         <div className="p-1">
-          {albumData?.map((item, index) => {
-            <TrackTypeList type="album" item={item} key={index} />;
+          {albumData?.tracks?.items?.map((item, index) => {
+            return (
+              <TrackTypeList
+                type="album"
+                item={item}
+                key={index}
+                index={index}
+              />
+            );
           })}
         </div>
       ) : (
         <div className="p-1">
-          {albumData?.map((item, index) => {
-            <TrackTypeSmall type="album" item={item} key={index} />;
+          {albumData?.tracks?.items?.map((item, index) => {
+            return (
+              <TrackTypeSmall
+                type="album"
+                item={item}
+                key={index}
+                index={index}
+              />
+            );
           })}
         </div>
       )}

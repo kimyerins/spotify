@@ -1,6 +1,13 @@
 import React from "react";
+// import { useAddAlbumLibrary } from "../../../hooks/useAlbumLibrary";
 
-const AlbumBanner = ({ albumData }) => {
+const AlbumBanner = ({ albumData, artistData }) => {
+  // const { mutate: addAlbum, isLoading, isError } = useAddAlbumLibrary();
+  // const handleAddAlbum = () => {
+  //   addAlbum(albumId); // 앨범 ID를 파라미터로 전달하여 앨범을 저장
+  // };
+
+  //총 재생시간 구하기
   let total_duration_ms = 0;
   albumData?.tracks?.items?.map((song) => {
     total_duration_ms += song.duration_ms;
@@ -11,6 +18,9 @@ const AlbumBanner = ({ albumData }) => {
 
   console.log(`${hours}시간 ${minutes}분 ${seconds}초`);
 
+  if (!albumData || !artistData || artistData.length === 0) {
+    return null; // 데이터가 없으면 빈 상태로 반환
+  }
   return (
     <div className="relative flex justify-center items-center  rounded-md w-full flex-grow-1  ">
       <div className="z-10 flex justify-center items-center  rounded-md w-full p-4">
@@ -18,7 +28,7 @@ const AlbumBanner = ({ albumData }) => {
           <div
             className="rounded-md w-[232px] h-[232px] bg-cover shadow-custom shadow-xl  hover:scale-[102%] transition-all duration-200"
             style={{
-              backgroundImage: `url(${albumData?.images[0]?.url})`,
+              backgroundImage: `url(${albumData?.images?.[0]?.url || ""})`, // 기본값 처리
             }}
           ></div>
           <div className="flex flex-col justify-end">
@@ -32,7 +42,7 @@ const AlbumBanner = ({ albumData }) => {
               <div className="shadow-xl">
                 <img
                   width={32}
-                  src={albumData?.images[0]?.url}
+                  src={artistData[0]?.images[0]?.url}
                   className="rounded-full"
                 />
               </div>
@@ -43,10 +53,12 @@ const AlbumBanner = ({ albumData }) => {
                   </li>
                   <li className="opacity-65">・</li>
                   <li className="opacity-65">
-                    {albumData?.release_date?.substring(0, 4)}
+                    {albumData?.release_date?.substring(0, 4) || "Unknown Date"}
                   </li>
                   <li className="opacity-65">・</li>
-                  <li className="opacity-65">{albumData?.total_tracks}곡,</li>
+                  <li className="opacity-65">
+                    {albumData?.total_tracks || 0}곡,
+                  </li>
                   <li className="opacity-65">
                     {hours > 0 ? `${hours}시간 ` : ""}
                     {`${minutes}분 ${seconds}초`}

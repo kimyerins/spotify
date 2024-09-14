@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
-const TrackTypeSmall = ({ type }) => {
+const TrackTypeSmall = ({ type, item, index }) => {
   // type 종류 : album, artist, playlist
   // 재생중인 노래 스타일 적용 필요
   // 더보기, hover 팝업 효과 만들기
   // 좋아요 표시한 곡인지
   const [isLike, setisLike] = useState(true);
-
+  const minutes = Math.floor((item?.duration_ms / (1000 * 60)) % 60);
+  const seconds = Math.floor((item?.duration_ms / 1000) % 60)
+    .toString()
+    .padStart(2, "0"); // seconds가 1자리일 경우 앞에 0 추가
   return (
     <div className="group flex items-center justify-between rounded-lg px-4 py-1 cursor-pointer transition duration-300 hover:bg-white/10">
       {/* 재생 버튼 or 인덱스 번호 */}
@@ -50,20 +53,20 @@ const TrackTypeSmall = ({ type }) => {
           </svg>
         </div>
         <span className="text-base font-bold text-[#afb5b5] flex group-hover:hidden">
-          1
+          {index + 1}
         </span>
         {/* 앨범이미지 */}
 
         <div className="flex flex-col">
           <h2 className="text-base font-semibold text-white hover:underline">
-            {/* 노래명 */}Song
+            {item?.name}
           </h2>
         </div>
       </div>
 
       {type === "album" ? (
         <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-          {/* 앨범 아티스트 */}복숭아
+          {item?.artists[0]?.name}
         </p>
       ) : (
         ""
@@ -128,7 +131,10 @@ const TrackTypeSmall = ({ type }) => {
           </div>
         )}
 
-        <span className="text-sm text-gray-300 mr-3">{/* 곡 길이 */}2:00</span>
+        <span className="text-sm text-gray-300 mr-3">
+          {/* 곡 길이 */}
+          {`0${minutes}:${seconds}`}
+        </span>
 
         {/* 더보기 버튼 */}
         <div className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
