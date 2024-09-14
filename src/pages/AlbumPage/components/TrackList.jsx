@@ -2,7 +2,7 @@ import { useState } from "react";
 import TrackTypeList from "./TrackTypeList";
 import TrackTypeSmall from "./TrackTypeSmall";
 
-const TrackList = ({ viewOptionBox }) => {
+const TrackList = ({ viewOptionBox, albumData }) => {
   const { viewOption, setViewOption } = viewOptionBox;
   return (
     <div className="text-white  mt-8 ">
@@ -37,19 +37,15 @@ const TrackList = ({ viewOptionBox }) => {
       {/* 트랙리스트 */}
       {viewOption == "list" ? (
         <div className="p-1">
-          <TrackTypeList type="album" />
-          <TrackTypeList type="album" />
-          <TrackTypeList type="album" />
-          <TrackTypeList type="album" />
+          {albumData?.map((item, index) => {
+            <TrackTypeList type="album" item={item} key={index} />;
+          })}
         </div>
       ) : (
         <div className="p-1">
-          <TrackTypeSmall type="album" />
-          <TrackTypeSmall type="album" />
-          <TrackTypeSmall type="album" />
-          <TrackTypeSmall type="album" />
-          <TrackTypeSmall type="album" />
-          <TrackTypeSmall type="album" />
+          {albumData?.map((item, index) => {
+            <TrackTypeSmall type="album" item={item} key={index} />;
+          })}
         </div>
       )}
     </div>

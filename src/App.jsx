@@ -30,9 +30,12 @@ function App() {
             <Route path="search" index element={<SearchPage />} />
             <Route path="detail/:type/:id" element={<DetailPage />} />
             <Route path="detail/artist/:id" element={<ArtistInfoPage />} />
-            <Route path="detail/album/:id" element={<AlbumPage />} />
+            <Route path="detail/Album/:id" element={<AlbumPage />} />
             <Route path="search/:keyword" element={<SearchResultPage />} />
-            <Route path="search/:keyword/:category" element={<SearchResultCategoryPage />} />
+            <Route
+              path="search/:keyword/:category"
+              element={<SearchResultCategoryPage />}
+            />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

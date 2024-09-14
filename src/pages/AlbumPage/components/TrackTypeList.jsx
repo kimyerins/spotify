@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TrackTypeList = ({ type }) => {
+const TrackTypeList = ({ type, item, index }) => {
   // type 종류 : album, artist, playlist
   // 재생중인 노래 스타일 적용 필요
   // 더보기, hover 팝업 효과 만들기
