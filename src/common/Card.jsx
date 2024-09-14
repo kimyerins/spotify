@@ -20,11 +20,11 @@ const Card = ({
     "https://i.namu.wiki/i/3B-OpZ4Zv3EHLm1L1u0vOWjT2Sy4uAT43W93T0QzZW-YhxaP8ECybTqzArW3u6xA86NG-GOWWPPnNyUgPMzllQ.webp";
   const navigate = useNavigate();
   const onClickCard = (url) => {
-    navigate(`${url}`);
+    navigate(`/${url}`);
   };
 
   const onClickSubTitle = (subTitleUrl) => {
-    navigate(`${subTitleUrl}`);
+    navigate(`/${subTitleUrl}`);
   };
   return (
     <div className="group inline-block">

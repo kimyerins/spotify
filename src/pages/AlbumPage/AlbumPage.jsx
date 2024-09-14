@@ -33,11 +33,11 @@ const AlbumPage = () => {
 
   // const { data: tracks, isLoading, isError, error } = useAlbumTracks(id); // 앨범 id로 트랙리스트 가져오기
   // console.log("트랙리스트 : ", tracks);
-  let arr = ["search", "main", "error"];
+  let arr = ["search"];
 
   return (
     <div
-      className={`w-[100%] bg-cover self-stretch h-auto   rounded-md bg-[#283423] bg-gradient-to-b from-transparent to-black`} //배경색상은 동적으로 변경할 예정.
+      className={`w-[100%] bg-cover self-stretch h-auto   rounded-md bg-[#283423] bg-gradient-to-b from-transparent to-[#121212]`} //배경색상은 동적으로 변경할 예정.
       // style={{
       //   backgroundImage: `url(
       // "https://i.namu.wiki/i/3B-OpZ4Zv3EHLm1L1u0vOWjT2Sy4uAT43W93T0QzZW-YhxaP8ECybTqzArW3u6xA86NG-GOWWPPnNyUgPMzllQ.webp")`,
@@ -47,7 +47,7 @@ const AlbumPage = () => {
       {/* 앨범 배너 */}
       <div>
         {/* <AlbumBanner albumData={albumData} /> */}
-        {/* <AlbumBanner /> */}
+        <AlbumBanner />
       </div>
       {/* 트랙리스트 섹션 */}
       <div className="p-4 ">
@@ -77,7 +77,7 @@ const AlbumPage = () => {
             디스코 그래피보기
           </div>
         </div>
-        <div className="flex justify-around mb-[60px]">
+        <div className="flex mb-[60px]">
           {arr?.map((data) => {
             return <Card title="테스트" subTitle="아티스트" url={data} />;
           })}
@@ -87,8 +87,16 @@ const AlbumPage = () => {
             subTitle="아티스트"
             subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
           />
-          <Card title="정국" subTitle="아티스트" />
-          <Card title="정국" subTitle="아티스트" />
+          <Card
+            title="정국"
+            subTitle="아티스트"
+            subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
+          />
+          <Card
+            title="정국"
+            subTitle="아티스트"
+            subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
+          />
         </div>
       </div>
       {/* <AlbumPageFooter /> */}
