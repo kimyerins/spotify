@@ -39,6 +39,12 @@ const Card = ({
             {imgUrl ? (
               <img
                 src={imgUrl}
+                style={{
+                    objectFit: "cover", // 이미지가 크기에 맞게 잘림
+                    objectPosition: "top", // 이미지를 위쪽에 맞춰서 아래가 잘리도록 설정
+                    width: "157px",
+                    height: "157px"
+                }}
                 alt="card-img"
                 width={300}
                 height={300}

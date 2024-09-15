@@ -12,6 +12,7 @@ import {
   usePlayTrack,
   usePauseTrack,
 } from "../../../hooks/Player/usePlayer";
+import { useAlbumTracks } from "../../../hooks/useAlbumTracks";
 
 const ControllerBar = ({ viewOptionBox, id }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
@@ -32,19 +33,25 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     saveAlbum, // 앨범 저장 함수
     removeAlbum, // 앨범 삭제 함수
   } = useAlbumLibrary(token, albumId);
-  console.log("저장여부", isSaved);
+
   const { data: deviceId } = usePlayerDevices(token);
-  const device_id = deviceId.devices[0].id;
-  console.log("deviceId", device_id);
+  const device_id = deviceId?.devices[0].id;
   const { data: playerState } = usePlayerState(token); // 현재 플레이어 상태 조회
   const { mutate: playTrack } = usePlayTrack();
   const { mutate: pauseTrack } = usePauseTrack();
+  const { data: trackList } = useAlbumTracks(albumId);
+  console.log("라이브러리 저장여부 : ", isSaved);
+  console.log("디바이스 ID : ", device_id);
+  console.log("재생중? : ", playerState?.is_playing);
+  console.log("트랙리스트 : ", trackList);
+  const trackUris = trackList?.map((track) => `spotify:track:${track.id}`);
+  console.log("트랙ID리스트 : ", trackUris);
 
   const handlePlay = () => {
     playTrack({
       token,
+      uris: trackUris, // 트랙은 노래 한곡인듯
       deviceData: `${device_id}`, // 실제 장치 ID로 대체
-      uris: ["spotify:track:6JVXVLqCPaodBSEwRFUN8w"], // 트랙은 노래 한곡인듯
     });
   };
 
@@ -58,18 +65,33 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     <div className="flex justify-between items-center ">
       <div className="flex items-center gap-4">
         {/* 재생 버튼 */}
-        <div className="cursor-pointer" onClick={handlePlay}>
-          <PlayButton
-            width={56}
-            height={56}
-            fill="#1ED760"
-            className=" hover:scale-105 hover:fill-[#3AE276]"
-          />
-        </div>
-        {/* <button onClick={handlePlay}>재생</button>
-        <button onClick={handlePause}>일시 정지</button>
-        {playerState && <p>현재 재생 중인 트랙: {playerState.item.name}</p>} */}
-        {/* (+) 추가하기 버튼 */}
+
+        {playerState?.is_playing ? (
+          <div className="cursor-pointer" onClick={handlePause}>
+            <svg
+              className="w-[56px] h-[56px]"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#1ED760"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H8Zm7 0a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        ) : (
+          <div className="cursor-pointer" onClick={handlePlay}>
+            <PlayButton
+              width={56}
+              height={56}
+              fill="#1ED760"
+              className=" hover:scale-105 hover:fill-[#3AE276]"
+            />
+          </div>
+        )}
 
         {isSaved ? (
           <div

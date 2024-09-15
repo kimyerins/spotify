@@ -9,6 +9,7 @@ const Recommend = ({ data }) => {
 
   console.log("tttttt", recommend);
 
+
   if (isLoading || !recommend || Object.keys(recommend).length === 0) {
     return "";
   }
@@ -26,6 +27,7 @@ const Recommend = ({ data }) => {
               title={item.name}
               subTitle={item.artists[0]?.name}
               imgUrl={item.album.images[item.album.images.length - 2]?.url}
+              url={`detail/track/${item.id}`}
             />
           ))}
       </div>

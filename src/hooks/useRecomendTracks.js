@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../utils/useApi.jsx";
-import {useDispatch, useSelector} from "react-redux";
-import {homepageActions} from "../redux/reducer/homepageSlice.jsx";
 
 const fetchRecommendTrack = async (genre) => {
     if(genre) {
