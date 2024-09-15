@@ -47,9 +47,9 @@ const ChartItem = ({ item, type, index }) => {
                     className="w-10 h-10 rounded-md mr-3"
                 />
                 <div className='flex flex-col'>
-                    <Link to={`/detail/track/${item?.name}`}><h2 className="text-base text-white hover:underline">{item.name}</h2></Link>
+                    <Link to={`/detail/track/${item?.id}`}><h2 className="text-base text-white hover:underline">{item.name}</h2></Link>
                     {type === 'album' || type === 'search'
-                        ? <Link to={`/detail/artist/${item?.artists[0]?.name}`}>
+                        ? <Link to={`/detail/artist/${item?.artists[0]?.id}`}>
                             <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.artists[0].name}</p>
                         </Link>
                         : ''
