@@ -7,21 +7,17 @@ import TrackList from "./components/TrackList";
 import { useState } from "react";
 import { useAlbumInfo } from "../../hooks/useAlbumInfo";
 import { useAlbumsOfArtists } from "../../hooks/useAlbumsOfArtists";
-import { useNavigate } from "react-router-dom";
 import { useArtistById } from "../../hooks/useArtistById";
 
 const AlbumPage = () => {
   const { id } = useParams();
   console.log("전달받은 params", id);
-  const navigate = useNavigate();
   const [viewOption, setViewOption] = useState("small"); // 보기를 small or list로 설정
   const viewOptionBox = {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
   let testAlbumId = "6XRGc3GNodkhSrPwHnx1KX"; //뉴진스의 앨범ID
-  // let testAlbumId = "41MozSoPIsD1dJM0CLPjZF"; //블랙핑크의 앨범ID
-  // const token = localStorage.getItem("spotifyToken");
 
   const { data: albumData, isLoading: isLoadingAlbum } = useAlbumInfo(id);
   let artistId = albumData?.artists[0]?.id; //아티스트 id

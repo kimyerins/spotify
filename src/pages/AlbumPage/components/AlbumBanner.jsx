@@ -29,12 +29,16 @@ const AlbumBanner = ({ albumData, artistData }) => {
           ></div>
           <div className="flex flex-col justify-end">
             <div className="text-white">
-              <span className="text-[14px]">EP</span>
+              <span className="text-[14px]">앨범</span>
             </div>
             <div className="text-white">
               <h2
                 className={` py-4 font-black ${
-                  albumData?.name > 6 ? "text-5xl" : "text-8xl"
+                  albumData?.name?.length > 10
+                    ? "text-3xl"
+                    : albumData?.name?.length > 6
+                    ? "text-5xl"
+                    : "text-8xl"
                 }`}
               >
                 {albumData?.name || "No Title"}
@@ -42,12 +46,12 @@ const AlbumBanner = ({ albumData, artistData }) => {
             </div>
             <div className="flex gap-2 items-center">
               <div className="shadow-xl">
-                {artistData[0]?.images?.[0]?.url ? (
+                {artistData?.images?.[0]?.url ? (
                   <img
                     width={32}
-                    src={artistData[0]?.images[0]?.url}
+                    src={artistData?.images[1]?.url}
                     className="rounded-full"
-                    alt={artistData[0]?.name || "Unknown Artist"}
+                    alt={artistData?.name || "Unknown Artist"}
                   />
                 ) : (
                   <div className="w-[32px] h-[32px] bg-gray-400 rounded-full" />
