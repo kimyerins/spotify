@@ -6,6 +6,13 @@ import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
 import ViewOptionBox from "./ViewOptionBox";
 import { useAlbumLibrary } from "../../../hooks/useAlbumLibrary";
 import RemoveButton from "../../../assets/images/RemoveButton.svg?react";
+import { usePlayerDevices } from "../../../hooks/Player/usePlayerDevices";
+import {
+  usePlayerState,
+  usePlayTrack,
+  usePauseTrack,
+} from "../../../hooks/Player/usePlayer";
+
 const ControllerBar = ({ viewOptionBox, id }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
   const [isViewOptionOpen, setIsViewOptionOpen] = useState(false); // 보기 옵션이 열려있는지 여부
@@ -14,6 +21,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
+
   const token = localStorage.getItem("spotifyToken");
   const albumId = id; // 실제 앨범 ID로 설정
   const {
@@ -25,12 +33,32 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     removeAlbum, // 앨범 삭제 함수
   } = useAlbumLibrary(token, albumId);
   console.log("저장여부", isSaved);
+  const { data: deviceId } = usePlayerDevices(token);
+  const device_id = deviceId.devices[1].id;
+  console.log("deviceId", device_id);
+  const { data: playerState } = usePlayerState(token); // 현재 플레이어 상태 조회
+  const { mutate: playTrack } = usePlayTrack();
+  const { mutate: pauseTrack } = usePauseTrack();
+
+  const handlePlay = () => {
+    playTrack({
+      token,
+      deviceData: `${device_id}`, // 실제 장치 ID로 대체
+      uris: ["spotify:track:1301WleyT98MSxVHPZCA6M"],
+    });
+  };
+
+  const handlePause = () => {
+    pauseTrack({
+      token,
+    });
+  };
 
   return (
     <div className="flex justify-between items-center ">
       <div className="flex items-center gap-4">
         {/* 재생 버튼 */}
-        <div className="cursor-pointer">
+        <div className="cursor-pointer" onClick={handlePlay}>
           <PlayButton
             width={56}
             height={56}
@@ -38,6 +66,9 @@ const ControllerBar = ({ viewOptionBox, id }) => {
             className=" hover:scale-105 hover:fill-[#3AE276]"
           />
         </div>
+        {/* <button onClick={handlePlay}>재생</button>
+        <button onClick={handlePause}>일시 정지</button>
+        {playerState && <p>현재 재생 중인 트랙: {playerState.item.name}</p>} */}
         {/* (+) 추가하기 버튼 */}
 
         {isSaved ? (
@@ -253,5 +284,4 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     </div>
   );
 };
-
 export default ControllerBar;
