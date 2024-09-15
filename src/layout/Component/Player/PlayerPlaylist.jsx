@@ -133,7 +133,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
                 </div>
               </div>
               <div className="cont_wrap px-[12px]">
-                <div className="activeDevice rounded-lg py-4 px-3">
+                <div className="activeDevice rounded-lg py-4 px-3 mb-6">
                   <div className="flex items-center">
                     <div className="imgbox w-[24x] h-[24px] mr-[8px]">
                       <img
@@ -146,20 +146,39 @@ const PlayerPlaylist = ({ visibleSection }) => {
                       현재 기기
                     </h3>
                   </div>
-                  <p className="text-white text-[16px]">{activeDevice?.name}</p>
+                  <p className="text-white text-[16px] font-bold">
+                    {activeDevice?.name}
+                  </p>
                 </div>
-                <h3 className="text-white text-[16px] font-bold">
+                <h3 className="text-white text-[16px] font-bold px-3">
                   다른 기기 선택
                 </h3>
-                {devicesQuery.data.devices.map(
-                  (device) =>
-                    device.id !== activeDevice?.id && (
-                      <li key={device.id} className="text-white text-[14px]">
-                        {device.name} {device.is_active ? "(Active)" : ""}
-                      </li>
-                    )
-                )}
-                <p className="text-white text-[16px]">{activeDevice?.name}</p>
+                <ul className="py-2 px-3 list-none">
+                  {devicesQuery.data.devices.map(
+                    (device) =>
+                      device.id !== activeDevice?.id && (
+                        <li
+                          key={device.id}
+                          className="text-white text-[16px] font-bold h-16 items-center flex"
+                        >
+                          <div className="icon mr-3">
+                            <svg
+                              data-encore-id="icon"
+                              role="presentation"
+                              aria-hidden="true"
+                              data-testid="main-icon"
+                              viewBox="0 0 24 24"
+                              className="Svg-sc-ytk21e-0 fhAPQu w-[24x] h-[24px]"
+                              fill={"#fff"}
+                            >
+                              <path d="M0 21a1 1 0 0 1 1-1h22a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1zM3 5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5zm3-1a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6z"></path>
+                            </svg>
+                          </div>
+                          {device.name} {device.is_active ? "(Active)" : ""}
+                        </li>
+                      )
+                  )}
+                </ul>
               </div>
             </div>
           )}
