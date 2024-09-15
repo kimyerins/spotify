@@ -15,8 +15,6 @@ import SearchResultCategoryPage from "./pages/SearchResultPage/SearchResultCateg
 import TrackDetailPage from "./pages/DetailPage/TrackDetailPage.jsx";
 
 function App() {
-
-
   return (
     <>
       <Provider store={store}>
@@ -33,9 +31,12 @@ function App() {
             <Route path="search" index element={<SearchPage />} />
             <Route path="detail/artist/:name" element={<ArtistInfoPage />} />
             <Route path="detail/album/:id" element={<AlbumPage />} />
-            <Route path="detail/track/:name" element={<TrackDetailPage/>} />
+            <Route path="detail/track/:name" element={<TrackDetailPage />} />
             <Route path="search/:keyword" element={<SearchResultPage />} />
-            <Route path="search/:keyword/:category" element={<SearchResultCategoryPage />} />
+            <Route
+              path="search/:keyword/:category"
+              element={<SearchResultCategoryPage />}
+            />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
