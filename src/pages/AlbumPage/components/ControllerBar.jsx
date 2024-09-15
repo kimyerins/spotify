@@ -4,8 +4,9 @@ import AddButton from "../../../assets/images/AddButton.svg?react";
 import RadioButton from "../../../assets/images/RadioButton.svg?react";
 import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
 import ViewOptionBox from "./ViewOptionBox";
+import { useAlbumLibrary } from "../../../hooks/useAlbumLibrary";
 
-const ControllerBar = ({ viewOptionBox }) => {
+const ControllerBar = ({ viewOptionBox, id }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
   const [isViewOptionOpen, setIsViewOptionOpen] = useState(false); // 보기 옵션이 열려있는지 여부
   const { viewOption, setViewOption } = viewOptionBox;
@@ -13,6 +14,17 @@ const ControllerBar = ({ viewOptionBox }) => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
+  const albumId = id; // 실제 앨범 ID로 설정
+  const {
+    isSaved, // 저장 여부
+    isCheckingSaved, // 확인 중 로딩 상태
+    isSaving, // 저장 중인지
+    isRemoving, // 제거 중인지
+    saveAlbum, // 앨범 저장 함수
+    removeAlbum, // 앨범 삭제 함수
+  } = useAlbumLibrary(albumId);
+  console.log("저장여부", isSaved);
+
   return (
     <div className="flex justify-between items-center ">
       <div className="flex items-center gap-4">

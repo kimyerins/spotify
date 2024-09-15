@@ -1,22 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../utils/useApi";
 
-// 앨범을 라이브러리에 저장하는 함수
+// 앨범을 라이브러리에 저장
 const saveAlbumToLibrary = async (albumId) => {
   return api.put("/me/albums", {
     ids: [albumId], // 저장할 앨범 ID 배열
   });
 };
-
+//앨범을 라이브러리에 제거
 const removeAlbumFromLibrary = async (albumId) => {
   return api.delete("/me/albums", {
-    ids: [albumId], // 저장할 앨범 ID 배열
+    data: {
+      ids: [albumId], // 제거할 앨범 ID 배열
+    },
   });
 };
 
 // 라이브러리 저장여부확인
 const checkIfAlbumIsSaved = async (albumId) => {
-  return api.put(`/me/albums/contains?ids=${albumId}`);
+  return api.get(`/me/albums/contains?ids=${albumId}`);
 };
 
 export const useAlbumLibrary = (albumId) => {
@@ -30,7 +32,7 @@ export const useAlbumLibrary = (albumId) => {
   } = useQuery({
     queryKey: ["albumSaved", albumId],
     queryFn: () => checkIfAlbumIsSaved(albumId),
-    enabled: !!albumId && !!accessToken, // albumId이 있을 때만 실행
+    enabled: !!albumId, // albumId이 있을 때만 실행
   });
 
   // 2. 앨범 저장 Mutation

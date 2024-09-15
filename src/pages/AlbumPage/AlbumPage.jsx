@@ -17,7 +17,7 @@ const AlbumPage = () => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
-  let testAlbumId = "6XRGc3GNodkhSrPwHnx1KX"; //뉴진스의 앨범ID
+  // let testAlbumId = "6XRGc3GNodkhSrPwHnx1KX"; //뉴진스의 앨범ID
 
   const { data: albumData, isLoading: isLoadingAlbum } = useAlbumInfo(id);
   let artistId = albumData?.artists[0]?.id; //아티스트 id
@@ -48,7 +48,7 @@ const AlbumPage = () => {
       </div>
       {/* 트랙리스트 섹션 */}
       <div className="p-4 ">
-        <ControllerBar viewOptionBox={viewOptionBox} />
+        <ControllerBar viewOptionBox={viewOptionBox} id={id} />
         <TrackList viewOptionBox={viewOptionBox} albumData={albumData} />
       </div>
       <div className="text-[#b3b3b3] flex flex-col mt-9 p-4">
