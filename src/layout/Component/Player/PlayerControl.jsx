@@ -13,14 +13,22 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
   const [token, setToken] = useState(() =>
     localStorage.getItem("spotifyToken")
   );
+  const {
+    data: playerState,
+    status,
+    error,
+    refetchPlayerState,
+  } = usePlayerState(token);
   const { data: deviceData, refetch: refetchDevices } = usePlayerDevices(token);
-  const { data: playerState, refetch: refetchPlayerState } =
-    usePlayerState(token);
   const [selectedDeviceId, setSelectedDeviceId] = useState(null);
   const { data: currentVolume } = useVolume(token);
 
   useEffect(() => {
-    if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
+    if (
+      deviceData &&
+      Array.isArray(deviceData.devices) &&
+      deviceData.devices.length > 0
+    ) {
       setSelectedDeviceId(deviceData.devices[0].id);
     }
   }, [deviceData]);
@@ -36,6 +44,11 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
       queryClient.invalidateQueries("player-queue");
     }
   }, [playerState, queryClient]);
+
+  if (status === "loading") return <div>Loading...</div>;
+  if (status === "failed") return <div>Error: {error}</div>;
+  if (!playerState) return null;
+
   return (
     <div className="control fixed left-0 bottom-0 w-full h-[72px] z-2 bg-[#000] px-[8px] flex justify-between items-center">
       <PlayerAlbum token={token} playerState={playerState} />

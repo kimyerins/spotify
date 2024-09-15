@@ -1,6 +1,6 @@
 import React from "react";
 
-const PlayerAlbum = ({ playerState }) => {
+const PlayerAlbum = ({ playerState, refetchPlayerState }) => {
   if (!playerState) {
     console.log("현재 재생중인 곡이 없습니다.");
   }

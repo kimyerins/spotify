@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { usePlayTrack, usePauseTrack } from "../../../hooks/Player/usePlayer";
 import { useSkipToNext } from "../../../hooks/Player/useSkipToNext";
 import { useSkipToPrevious } from "../../../hooks/Player/useSkipToPrev";
@@ -21,10 +21,21 @@ const PlayerCenterControl = () => {
   const { position, handleSeekChange, handleSeek } = useSeekBar(token);
 
   useEffect(() => {
-    if (deviceData && deviceData.devices && deviceData.devices.length > 0) {
+    if (
+      deviceData &&
+      Array.isArray(deviceData.devices) &&
+      deviceData.devices.length > 0
+    ) {
       setSelectedDeviceId(deviceData.devices[0].id);
     }
   }, [deviceData]);
+
+  useEffect(() => {
+    const refreshDevicesInterval = setInterval(() => {
+      refetchDevices();
+    }, 10000); // 10초마다 디바이스 목록 갱신
+    return () => clearInterval(refreshDevicesInterval);
+  }, [refetchDevices]);
 
   const handleNextTrack = () => {
     skipToNextMutation.mutate({ deviceData });
@@ -34,7 +45,7 @@ const PlayerCenterControl = () => {
     skipToPreviousMutation.mutate({ deviceData });
   };
 
-  const handlePlayPause = async () => {
+  const handlePlayPause = useCallback(async () => {
     console.log("현재 플레이어 상태:", playerState);
     if (!token || !selectedDeviceId) {
       console.log("토큰 또는 선택된 디바이스가 없습니다.");
@@ -46,6 +57,7 @@ const PlayerCenterControl = () => {
       if (playerState?.is_playing) {
         // 현재 재생 중이면 일시정지
         const result = await pauseTrackMutation.mutateAsync({
+          token,
           deviceData: selectedDeviceId,
         });
         console.log("일시정지 결과:", result);
@@ -55,17 +67,16 @@ const PlayerCenterControl = () => {
         const currentTrack = playerState?.item;
         const progress = playerState?.progress_ms || 0;
         let playParams = {
-          device_id: selectedDeviceId,
           position_ms: progress,
         };
 
-        if (context && context.uri) {
+        if (context?.uri) {
           // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
           playParams.context_uri = context.uri;
-          if (currentTrack && currentTrack.uri) {
+          if (currentTrack?.uri) {
             playParams.offset = { uri: currentTrack.uri };
           }
-        } else if (currentTrack && currentTrack.uri) {
+        } else if (currentTrack?.uri) {
           // 단일 트랙인 경우
           playParams.uris = [currentTrack.uri];
         } else {
@@ -76,20 +87,26 @@ const PlayerCenterControl = () => {
         const playResult = await playTrackMutation.mutateAsync({
           token,
           deviceData: selectedDeviceId,
-          ...playParams,
+          playParams,
         });
         console.log("재생 시작", playParams);
         console.log("재생 결과:", playResult);
       }
 
       // 플레이어 상태 갱신
-      setTimeout(() => {
-        refetchPlayerState();
-      }, 500); // 500ms 후에 상태 갱신
+      refetchPlayerState();
     } catch (error) {
-      console.error("재생/일시정지 중 오류 발생:", error);
+      console.error("서버 응답:", error.response.data);
     }
-  };
+  }, [
+    token,
+    selectedDeviceId,
+    playerState,
+    pauseTrackMutation,
+    playTrackMutation,
+    refetchPlayerState,
+    refetchDevices,
+  ]);
   return (
     <div>
       <div className="control_wrap flex items-center">
