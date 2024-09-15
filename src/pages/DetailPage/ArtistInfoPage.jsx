@@ -3,15 +3,15 @@ import RoundInfoCard from "../../common/InfoCard/RoundInfoCard";
 import SquareInfoCard from "../../common/InfoCard/SquareInfoCard";
 import TrackListCard from "../../common/InfoCard/TrackListCard";
 import { useParams } from "react-router-dom";
-import {useArtistById} from "../../hooks/useArtistById.jsx";
-import {useArtistsTopTrack} from "../../hooks/useArtistTopTrack.js";
+import { useArtistById } from "../../hooks/useArtistById.jsx";
+import { useArtistsTopTrack } from "../../hooks/useArtistTopTrack.js";
 
 const ArtistInfoPage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { name } = useParams();
-  const { data, isLoading, isError } = useArtistById(name);
-  const {data:toptracks} = useArtistsTopTrack(name)
+  const { id } = useParams();
+  const { data, isLoading, isError } = useArtistById(id);
+  const { data: toptracks } = useArtistsTopTrack(id)
 
   const togglePopup = () => {
     setPopupVisible(!popupVisible);
@@ -21,8 +21,8 @@ const ArtistInfoPage = () => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log('artistinfo',data)
-  console.log('toptrackss',toptracks)
+  console.log('artistinfo', data)
+  console.log('toptrackss', toptracks)
 
   const trackListCount = isExpanded ? 10 : 5;
 
@@ -40,10 +40,11 @@ const ArtistInfoPage = () => {
         <div
           className={"relative w-[100%] h-80 bg-cover bg-top"}
           style={{
-            backgroundImage: `url(${data.images[0].url})`,
+            backgroundImage: data?.images?.length > 0 ? `url(${data.images[0].url})` : 'none',
             backgroundSize: "cover",
           }}
         >
+
           <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-end p-8 bg-gradient-to-b from-transparent to-[#121212]">
             <div className={"flex items-center gap-2.5"}>
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#4cb3ff" xmlns="http://www.w3.org/2000/svg">
@@ -52,10 +53,11 @@ const ArtistInfoPage = () => {
               </svg>
               <p className="text-sm">확인된 아티스트</p>
             </div>
-            <h2 className={"text-8xl font-extrabold"}>{data.name}</h2>
+            <h2 className={"text-8xl font-extrabold"}>{data?.name || 'Unknown Artist'}</h2>
             <div className="pt-6">
-              월별 리스너 <span className="font-semibold">{data.followers.total.toLocaleString()}</span>명
+              월별 리스너 <span className="font-semibold">{data?.followers?.total?.toLocaleString() || '0'}</span>명
             </div>
+
           </div>
         </div>
 
@@ -79,7 +81,7 @@ const ArtistInfoPage = () => {
           <div className={"p-4 bg-[#121212]"}>
             <h3 className={"text-2xl font-bold"}>인기</h3>
             <div className={"p-4"}>
-              {toptracks?.slice(0,trackListCount).map((item,index) => (
+              {toptracks?.slice(0, trackListCount).map((item, index) => (
                 <TrackListCard key={index} item={item} index={index} />
               ))}
               <button onClick={toggleTrackList} className={"p-2 mt-2 text-sm font-bold text-[#b3b3b3] hover:text-[#fff]"}>
