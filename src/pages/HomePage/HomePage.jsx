@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import { useUserInfo } from "../../hooks/useUserInfo.jsx";
 import { userInfoActions } from "../../redux/reducer/userInfoSlice.jsx";
@@ -12,7 +12,6 @@ const HomePage = () => {
     all:'모두',
     music:'음악',
     artist:'아티스트',
-    album:'앨범'
   }
 
   const dispatch = useDispatch();
@@ -163,6 +162,14 @@ const HomePage = () => {
     "work-out",
     "world-music"
   ]
+
+  const filterInit = {
+    all: true,
+    tracks: false,
+    artist: false
+  }
+
+  const [filter, setFilter] = useState(filterInit)
   const getRandomItems = (arr, num) => {
     const shuffled = arr.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, num);
@@ -173,11 +180,46 @@ const HomePage = () => {
 
   const defaultGenre = ['k-pop']
 
-
-
  const result = [...defaultGenre, ...randomGenre]
 
-  console.log(result)
+  const handleFilter = (filterValue) => {
+    if (filterValue === 0) {
+      // 모두 버튼 클릭 시 모든 필터를 true로
+      setFilter(({
+        all: true,
+        tracks: false,
+        artist: false
+      }));
+    } else if (filterValue === 1) {
+      // 음악 버튼 클릭 시, tracks를 토글하지만 둘 다 false가 되는 것을 방지
+      setFilter((prev) => ({
+        all: false,
+        tracks: !prev.tracks,
+        artist: false
+      }));
+    } else if (filterValue === 2) {
+      // 아티스트 버튼 클릭 시, artist를 토글하지만 둘 다 false가 되는 것을 방지
+      setFilter((prev) => ({
+        artist: !prev.artist,
+        all: false,
+        tracks: false
+      }));
+    }
+
+  };
+
+  useEffect(() => {
+    if (!filter.tracks && !filter.artist) {
+      setFilter((prev) => ({
+        ...prev,
+        all: true,
+      }));
+    }
+  }, [filter.tracks, filter.artist]);
+
+
+  console.log('filterrrrrr',filter)
+
 
    const { data } = useUserInfo();
   useEffect(() => {
@@ -194,19 +236,24 @@ const HomePage = () => {
         <div className={'main max-w-[2100px]'}>
           <div className={'flex mt-1 px-5'}>
             <button
-                className={'h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 hover:bg-[rgb(214,214,214)] hover:text-black'}>{filterTitle.all}</button>
+                className={`h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 ${filter.all?'bg-white text-black':'hover:bg-[rgb(214,214,214)] hover:text-black'}`}
+                onClick={()=>handleFilter(0)}>{filterTitle.all}</button>
             <button
-                className={'h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 hover:bg-[rgb(214,214,214)] hover:text-black'}>{filterTitle.music}</button>
+                className={`h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 ${filter.tracks?'bg-white text-black':'hover:bg-[rgb(214,214,214)] hover:text-black'}`}
+                onClick={()=>handleFilter(1)}>{filterTitle.music}</button>
             <button
-                className={'h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 hover:bg-[rgb(214,214,214)] hover:text-black'}>{filterTitle.artist}</button>
-            <button
-                className={'h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 hover:bg-[rgb(214,214,214)] hover:text-black'}>{filterTitle.album}</button>
+                className={`h-8 px-4 bg-[rgb(37,37,37)] rounded-full text-[rgb(174,174,174)] mx-1 ${filter.artist?'bg-white text-black':'hover:bg-[rgb(214,214,214)] hover:text-black'}`}
+                onClick={()=>handleFilter(2)}>{filterTitle.artist}</button>
           </div>
-          <div className={'card-div text-white mx-1 mt-10 px-5 w-[calc(100vw-800px)] min-w-[560px] max-w-[1900px]'}>
+          <div className={'card-div text-white mx-1 mt-10 px-5 w-[calc(100vw-800px)] min-w-[400px] max-w-[1900px]'}>
+            <div className={filter.all || filter.tracks?'':'hidden'}>
             {result.map((item, index)=>(
                 <Recommend key={index} data={item}/>
             ))}
+            </div>
+            <div className={filter.all || filter.artist?'':'hidden'}>
               <Artists key={result.length} data={randomIds}/>
+          </div>
           </div>
         </div>
       </div>
