@@ -17,11 +17,15 @@ const removeAlbumFromLibrary = async (albumId) => {
 };
 
 // 라이브러리 저장여부확인
-const checkIfAlbumIsSaved = async (albumId) => {
-  return api.get(`/me/albums/contains?ids=${albumId}`);
+const checkIfAlbumIsSaved = async (token, albumId) => {
+  return api.get(`/me/albums/contains?ids=${albumId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-export const useAlbumLibrary = (albumId) => {
+export const useAlbumLibrary = (token, albumId) => {
   const queryClient = useQueryClient();
 
   // 1. 앨범이 라이브러리에 저장되었는지 여부 확인
@@ -30,8 +34,9 @@ export const useAlbumLibrary = (albumId) => {
     isLoading: isCheckingSaved,
     refetch: refetchSaved,
   } = useQuery({
-    queryKey: ["albumSaved", albumId],
-    queryFn: () => checkIfAlbumIsSaved(albumId),
+    queryKey: ["albumSaved", albumId, token],
+    queryFn: () => checkIfAlbumIsSaved(token, albumId),
+    select: (result) => result.data[0],
     enabled: !!albumId, // albumId이 있을 때만 실행
   });
 
