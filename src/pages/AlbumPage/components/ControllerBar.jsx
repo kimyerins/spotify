@@ -34,7 +34,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
   } = useAlbumLibrary(token, albumId);
   console.log("저장여부", isSaved);
   const { data: deviceId } = usePlayerDevices(token);
-  const device_id = deviceId.devices[1].id;
+  const device_id = deviceId.devices[0].id;
   console.log("deviceId", device_id);
   const { data: playerState } = usePlayerState(token); // 현재 플레이어 상태 조회
   const { mutate: playTrack } = usePlayTrack();
@@ -44,7 +44,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     playTrack({
       token,
       deviceData: `${device_id}`, // 실제 장치 ID로 대체
-      uris: ["spotify:track:1301WleyT98MSxVHPZCA6M"],
+      uris: ["spotify:track:6JVXVLqCPaodBSEwRFUN8w"], // 트랙은 노래 한곡인듯
     });
   };
 
