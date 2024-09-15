@@ -6,22 +6,23 @@ import {
 } from "../../hooks/Player/userPlayerPlaying";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
 import "./PlayerPlayList.style.css";
+import { usePlayerState } from "../../hooks/Player/usePlayer";
 
 const PlayerPlaylist = ({ visibleSection }) => {
   const { token } = useSpotifyToken();
   const playlistQuery = usePlayerPlaying(token);
   const devicesQuery = usePlayerDevices(token);
   const queueQuery = usePlayerQueue(token);
+  const { data: playerState, refetch: refetchPlayerState } =
+    usePlayerState(token);
   const activeDevice = devicesQuery.data?.devices?.find(
     (device) => device.is_active
   );
-  console.log("queueQuery", queueQuery);
-  console.log("devicesQuery", devicesQuery);
-  console.log("activeDevice", activeDevice);
 
   useEffect(() => {
     if (visibleSection === "playlist") {
       playlistQuery.refetch();
+      refetchPlayerState();
     } else if (visibleSection === "device") {
       devicesQuery.refetch();
     }
