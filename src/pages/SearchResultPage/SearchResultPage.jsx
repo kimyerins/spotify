@@ -93,7 +93,7 @@ const SearchResultPage = () => {
                     <div className='flex gap-4 w-full mt-6 flex-row max-[1300px]:flex-col '>
                         <div className='w-1/2 max-[1300px]:w-full'>
                             <h2 className='text-2xl mb-2 text-white font-bold'>상위 결과</h2>
-                            <Link to={`/detail/artist/${results?.artists[0]?.name}`}>
+                            <Link to={`/detail/artist/${results?.artists[0]?.id}`}>
                                 <div className='h-56 p-5 bg-[#181818] cursor-pointer hover:bg-[#1f1f1f] rounded-[6px] group transition-all duration-300 ease-in-out'>
                                     <img className='overflow-hidden rounded-full w-24 h-24 mb-5' loading="lazy" src={results?.artists[0]?.images[0]?.url} alt="" />
                                     <div className={'relative'}>
@@ -130,13 +130,13 @@ const SearchResultPage = () => {
                     </div>
 
                     {/* 아티스트 섹션 */}
-                    <Section type='아티스트' items={results?.artists} count={count} />
+                    <Section type='artist' items={results?.artists} count={count} />
 
                     {/* 앨범 섹션 */}
-                    <Section type='앨범' items={results?.albums} count={count} />
+                    <Section type='album' items={results?.albums} count={count} />
 
                     {/* 플레이리스트 섹션 */}
-                    <Section type='플레이리스트' items={results?.playlists} count={count} />
+                    <Section type='playlist' items={results?.playlists} count={count} />
                 </>
             )}
         </div>
