@@ -34,11 +34,12 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     removeAlbum, // 앨범 삭제 함수
   } = useAlbumLibrary(token, albumId);
 
-  const { data: deviceId } = usePlayerDevices(token);
+  const { data: deviceId, refetch: refetchDevices } = usePlayerDevices(token);
   const device_id = deviceId?.devices[0].id;
   const { data: playerState } = usePlayerState(token); // 현재 플레이어 상태 조회
   const { mutate: playTrack } = usePlayTrack();
-  const { mutate: pauseTrack } = usePauseTrack();
+  // const { mutate: pauseTrack } = usePauseTrack();
+  const pauseTrackMutation = usePauseTrack(token);
   const { data: trackList } = useAlbumTracks(albumId);
   console.log("라이브러리 저장여부 : ", isSaved);
   console.log("디바이스 ID : ", device_id);
@@ -55,10 +56,68 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     });
   };
 
-  const handlePause = () => {
-    pauseTrack({
-      token,
-    });
+  // const handlePause = () => {
+  //   pauseTrack({
+  //     token,
+  //   });
+  // };
+  const handlePlayPause = async () => {
+    console.log("현재 플레이어 상태:", playerState);
+    if (!token) {
+      console.log("토큰 또는 선택된 디바이스가 없습니다.");
+      await refetchDevices();
+      return;
+    }
+
+    try {
+      if (playerState?.is_playing) {
+        // 현재 재생 중이면 일시정지
+        const result = await pauseTrackMutation.mutateAsync({
+          deviceData: device_id,
+        });
+        console.log("일시정지 결과:", result);
+      } else {
+        // 현재 일시정지 상태이면 재생
+        const context = playerState?.context;
+        const currentTrack = playerState?.item;
+        const progress = playerState?.progress_ms || 0;
+        let playParams = {
+          position_ms: progress,
+        };
+
+        if (context && context.uri) {
+          // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
+          playParams.context_uri = context.uri;
+          if (currentTrack && currentTrack.uri) {
+            playParams.offset = { uri: currentTrack.uri };
+          }
+        } else if (currentTrack && currentTrack.uri) {
+          // 단일 트랙인 경우
+          playParams.uris = [currentTrack.uri];
+        } else {
+          console.error("재생할 수 있는 트랙이 없습니다.");
+          return;
+        }
+
+        const playResult = await playTrackMutation.mutateAsync({
+          token,
+          deviceData: device_id,
+          ...playParams,
+        });
+        console.log("재생 시작", {
+          deviceData: device_id,
+          ...playParams,
+        });
+        console.log("재생 결과:", playResult);
+      }
+
+      // 플레이어 상태 갱신
+      setTimeout(() => {
+        refetchPlayerState();
+      }, 500); // 500ms 후에 상태 갱신
+    } catch (error) {
+      console.error("재생/일시정지 중 오류 발생:", error);
+    }
   };
 
   return (
@@ -67,7 +126,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
         {/* 재생 버튼 */}
 
         {playerState?.is_playing ? (
-          <div className="cursor-pointer" onClick={handlePause}>
+          <div className="cursor-pointer" onClick={handlePlayPause}>
             <svg
               className="w-[56px] h-[56px]"
               aria-hidden="true"
