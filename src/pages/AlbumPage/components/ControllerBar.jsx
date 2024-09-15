@@ -5,7 +5,7 @@ import RadioButton from "../../../assets/images/RadioButton.svg?react";
 import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
 import ViewOptionBox from "./ViewOptionBox";
 import { useAlbumLibrary } from "../../../hooks/useAlbumLibrary";
-
+import RemoveButton from "../../../assets/images/RemoveButton.svg?react";
 const ControllerBar = ({ viewOptionBox, id }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
   const [isViewOptionOpen, setIsViewOptionOpen] = useState(false); // 보기 옵션이 열려있는지 여부
@@ -14,6 +14,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
+  const token = localStorage.getItem("spotifyToken");
   const albumId = id; // 실제 앨범 ID로 설정
   const {
     isSaved, // 저장 여부
@@ -22,7 +23,7 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     isRemoving, // 제거 중인지
     saveAlbum, // 앨범 저장 함수
     removeAlbum, // 앨범 삭제 함수
-  } = useAlbumLibrary(albumId);
+  } = useAlbumLibrary(token, albumId);
   console.log("저장여부", isSaved);
 
   return (
@@ -38,25 +39,44 @@ const ControllerBar = ({ viewOptionBox, id }) => {
           />
         </div>
         {/* (+) 추가하기 버튼 */}
-        <div className="cursor-pointer ">
-          <svg
-            className="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width={56}
-            height={56}
-            fill="none"
-            viewBox="0 0 24 24"
+
+        {isSaved ? (
+          <div
+            className="cursor-pointer "
+            onClick={() => removeAlbum()} // 앨범 제거
+            disabled={isRemoving}
           >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            <RemoveButton
+              color="#3AE276"
+              className={`w-9 h-9 hover:scale-105`}
             />
-          </svg>
-        </div>
+          </div>
+        ) : (
+          <div
+            className="cursor-pointer "
+            onClick={() => saveAlbum()} // 앨범 저장
+            disabled={isSaving}
+          >
+            <svg
+              className="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width={56}
+              height={56}
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </div>
+        )}
+
         {/* 옵션 버튼 */}
         <div
           className="cursor-pointer relative"
