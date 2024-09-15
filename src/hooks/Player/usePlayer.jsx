@@ -17,7 +17,7 @@ export const usePlayerState = (token) => {
     queryFn: () => fetchPlayerState(token),
     select: (result) => result.data || null,
     enabled: !!token,
-    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 2,
     retry: false,
   });
   return { ...result, refetchPlayerState: result.refetch };

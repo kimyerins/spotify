@@ -25,6 +25,7 @@ export const usePlayerPlaying = (token) => {
     queryKey: ["playing-list"],
     queryFn: () => fetchPlayinglist(token),
     enabled: false,
+    retry: false,
   });
 };
 
@@ -33,7 +34,7 @@ export const usePlayerQueue = (token) => {
     queryKey: ["player-queue"],
     queryFn: () => fetchPlaylistWithQueue(token),
     enabled: false,
-    refetchInterval: 5000,
     refetchOnWindowFocus: true,
+    retry: false,
   });
 };

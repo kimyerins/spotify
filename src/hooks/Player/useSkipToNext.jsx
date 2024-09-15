@@ -11,7 +11,7 @@ const skipToNext = async ({ token, deviceData }) => {
   });
 };
 
-export const useSkipToNext = () => {
+export const useSkipToNext = (token) => {
   return useMutation({
     mutationFn: skipToNext,
     onSuccess: () => {

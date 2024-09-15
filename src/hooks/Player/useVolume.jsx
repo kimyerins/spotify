@@ -26,21 +26,8 @@ export const useVolume = (token) => {
   return useQuery({
     queryKey: ["volume"],
     queryFn: () => fetchVolume(token),
-    refetchInterval: 30000,
     enabled: !!token,
-    retry: (failureCount, error) => {
-      // 429 에러일 경우에만 재시도
-      if (error.response?.status === 429) {
-        const retryAfter = error.response.headers["retry-after"];
-        if (retryAfter) {
-          return new Promise((resolve) => {
-            setTimeout(() => resolve(true), parseInt(retryAfter) * 1000);
-          });
-        }
-        return failureCount < 3; // 최대 3번까지 재시도
-      }
-      return false; // 다른 에러의 경우 재시도하지 않음
-    },
+    retry: false,
   });
 };
 
