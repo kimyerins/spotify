@@ -3,7 +3,7 @@ import api from "../utils/useApi";
 
 const pendingRequests = new Map(); // 요청을 관리하는 맵
 
-const fetchAlbumsOfArtists = async (id) => {
+const fetchArtistsById = async (id) => {
   if (pendingRequests.has(id)) {
     // 동일한 id에 대한 요청이 진행 중이면 기존 요청의 Promise 반환
     return pendingRequests.get(id);
@@ -11,14 +11,14 @@ const fetchAlbumsOfArtists = async (id) => {
 
   const fetchPromise = (async () => {
     try {
-      const response = await api.get(`/artists/${id}/albums`);
+      const response = await api.get(`/artists/${id}`);
       return response.data;
     } catch (error) {
       if (error.response?.status === 429) {
         const retryAfter = error.response.headers["retry-after"] || 1;
         console.log(`Rate limited. Retrying after ${retryAfter} seconds.`);
         await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
-        return fetchAlbumsOfArtists(id); // 재시도
+        return fetchArtistsById(id); // 재시도
       }
       throw error; // 429 외의 오류는 그대로 던짐
     } finally {
@@ -30,11 +30,11 @@ const fetchAlbumsOfArtists = async (id) => {
   return fetchPromise;
 };
 
-/**아티스트 ID를 통해 앨범 정보 가져오기 */
-export const useAlbumsOfArtists = (id) => {
+export const useArtistById = (id) => {
   return useQuery({
-    queryKey: ["artists", id, "albums"],
-    queryFn: () => fetchAlbumsOfArtists(id),
+    queryKey: ["artist", id],
+    queryFn: () => fetchArtistsById(id),
+    retry: false,
     select: (result) => result,
     refetchOnWindowFocus: false, // 창이 다시 포커스될 때 자동으로 요청하지 않음
     refetchOnMount: false, // 컴포넌트가 마운트될 때 자동으로 요청하지 않음

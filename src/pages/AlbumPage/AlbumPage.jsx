@@ -5,13 +5,10 @@ import { Link, useParams } from "react-router-dom";
 import ControllerBar from "./components/ControllerBar";
 import TrackList from "./components/TrackList";
 import { useState } from "react";
-import AlbumPageFooter from "./AlbumPageFooter";
-import { useSpotifyAlbum } from "../../hooks/useSpotifyAlbum";
 import { useAlbumInfo } from "../../hooks/useAlbumInfo";
 import { useAlbumsOfArtists } from "../../hooks/useAlbumsOfArtists";
 import { useNavigate } from "react-router-dom";
-import { useAlbumTracks } from "../../hooks/useAlbumTracks";
-import { useArtists } from "../../hooks/useArtists";
+import { useArtistById } from "../../hooks/useArtistById";
 
 const AlbumPage = () => {
   const { id } = useParams();
@@ -22,22 +19,23 @@ const AlbumPage = () => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
-  // let testAlbumId = "6XRGc3GNodkhSrPwHnx1KX"; //뉴진스의 앨범ID
-  let testAlbumId = "41MozSoPIsD1dJM0CLPjZF"; //블랙핑크의 앨범ID
+  let testAlbumId = "6XRGc3GNodkhSrPwHnx1KX"; //뉴진스의 앨범ID
+  // let testAlbumId = "41MozSoPIsD1dJM0CLPjZF"; //블랙핑크의 앨범ID
   // const token = localStorage.getItem("spotifyToken");
 
-  const { data: albumData, isLoading, isError, error } = useAlbumInfo(id); // 앨범 id로 데이터 가져오기
+  const { data: albumData, isLoading: isLoadingAlbum } = useAlbumInfo(id);
+  let artistId = albumData?.artists[0]?.id; //아티스트 id
+  const { data: albumDataByArtistId } = useAlbumsOfArtists(artistId); // 아티스트 id로 앨범데이터 가져오기
+  const { data: artistData, isLoading: isLoadingArtist } =
+    useArtistById(artistId); //아티스트정보 가져오기
+
   console.log("앨범데이터 : ", albumData);
-
-  // const { data: albumDataByArtistId } = useAlbumsOfArtists("6HvZYsbFfjnjFrWF950C9d"); // 아티스트 id로 앨범데이터 가져오기
-  // console.log("앨범데이터by아티스트 : ", albumDataByArtistId);
-
-  // const { data: tracks, isLoading, isError, error } = useAlbumTracks(id); // 앨범 id로 트랙리스트 가져오기
-  // console.log("트랙리스트 : ", tracks);
-  let arr = ["search"];
-  let artistId = albumData?.artists[0]?.id;
-  const { data: artistData } = useArtists(artistId);
+  console.log("앨범데이터by아티스트 : ", albumDataByArtistId);
   console.log("아티스트데이터", artistData);
+  // 데이터 로드 상태에 따른 렌더링 처리
+  if (isLoadingAlbum || isLoadingArtist) {
+    return <div>Loading...</div>;
+  }
   return (
     <div
       className={`w-[100%] bg-cover self-stretch h-auto   rounded-md bg-[#283423] bg-gradient-to-b from-transparent to-[#121212]`} //배경색상은 동적으로 변경할 예정.
@@ -79,29 +77,20 @@ const AlbumPage = () => {
             디스코 그래피보기
           </div>
         </div>
-        <div className="flex mb-[60px]">
-          {arr?.map((data) => {
-            return <Card title="테스트" subTitle="아티스트" url={data} />;
+        <div className="flex mb-[60px] justify-between">
+          {albumDataByArtistId?.items?.slice(0, 4).map((data, index) => {
+            return (
+              <Card
+                title={data.name}
+                subTitle={data.artists[0].name}
+                imgUrl={data.images[0].url}
+                url={`detail/Album/${data.id}`}
+                key={index}
+              />
+            );
           })}
-
-          <Card
-            title="정국"
-            subTitle="아티스트"
-            subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
-          />
-          <Card
-            title="정국"
-            subTitle="아티스트"
-            subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
-          />
-          <Card
-            title="정국"
-            subTitle="아티스트"
-            subTitleUrl={"detail/Album/1FVw30SoC91lq1UZ6N9rwN"}
-          />
         </div>
       </div>
-      {/* <AlbumPageFooter /> */}
     </div>
   );
 };

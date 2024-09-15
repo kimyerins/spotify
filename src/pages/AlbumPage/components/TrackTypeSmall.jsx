@@ -144,7 +144,7 @@ const TrackTypeSmall = ({ type, item, index }) => {
             enable-background="new 0 0 32 32"
             id="Glyph"
             version="1.1"
-            xml:space="preserve"
+            xmlSpace="preserve"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             stroke="#ffffff"

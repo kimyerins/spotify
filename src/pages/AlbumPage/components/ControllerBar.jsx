@@ -28,7 +28,7 @@ const ControllerBar = ({ viewOptionBox }) => {
         {/* (+) 추가하기 버튼 */}
         <div className="cursor-pointer ">
           <svg
-            class="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
+            className="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width={56}
