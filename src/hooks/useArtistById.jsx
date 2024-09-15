@@ -34,7 +34,6 @@ export const useArtistById = (id) => {
   return useQuery({
     queryKey: ["artist", id],
     queryFn: () => fetchArtistsById(id),
-    retry: false,
     select: (result) => result,
     refetchOnWindowFocus: false, // 창이 다시 포커스될 때 자동으로 요청하지 않음
     refetchOnMount: false, // 컴포넌트가 마운트될 때 자동으로 요청하지 않음

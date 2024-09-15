@@ -4,19 +4,14 @@ import SquareInfoCard from "../../common/InfoCard/SquareInfoCard";
 import TrackListCard from "../../common/InfoCard/TrackListCard";
 import { useParams } from "react-router-dom";
 import { useSearchArtists } from "../../hooks/useSearchArtists";
+import {useArtists} from "../../hooks/useArtists.js";
+import {useArtistById} from "../../hooks/useArtistById.jsx";
 
 const ArtistInfoPage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { name } = useParams();
-  const { data, isLoading, isError } = useSearchArtists(name);
-
-  let info = null;
-
-  // 데이터가 존재하고 첫 번째 항목이 있을 때 info에 할당
-  if (data && data.length > 0) {
-    info = data[0];
-  }
+  const { data, isLoading, isError } = useArtistById(name);
 
   const togglePopup = () => {
     setPopupVisible(!popupVisible);
@@ -29,7 +24,7 @@ const ArtistInfoPage = () => {
   const trackListCount = isExpanded ? 10 : 5;
 
   // 로딩 중이거나 데이터가 없을 때
-  if (isLoading || !info) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
@@ -42,7 +37,7 @@ const ArtistInfoPage = () => {
         <div
           className={"relative w-[100%] h-80 bg-cover bg-top"}
           style={{
-            backgroundImage: `url(${info.images[0].url})`,
+            backgroundImage: `url(${data.images[0].url})`,
             backgroundSize: "cover",
           }}
         >
@@ -54,9 +49,9 @@ const ArtistInfoPage = () => {
               </svg>
               <p className="text-sm">확인된 아티스트</p>
             </div>
-            <h2 className={"text-8xl font-extrabold"}>{info.name}</h2>
+            <h2 className={"text-8xl font-extrabold"}>{data.name}</h2>
             <div className="pt-6">
-              월별 리스너 <span className="font-semibold">{info.followers.total.toLocaleString()}</span>명
+              월별 리스너 <span className="font-semibold">{data.followers.total.toLocaleString()}</span>명
             </div>
           </div>
         </div>
