@@ -14,7 +14,7 @@ const TrackTypeSmall = ({ type, item, index }) => {
     <div className="group grid grid-cols-4 gap-4 rounded-lg px-4 py-1 cursor-pointer transition duration-300 hover:bg-white/10  items-center">
       {/* 재생 버튼 or 인덱스 번호 */}
       <div className="flex items-center space-x-4 col-span-2">
-        <div className="w-3 h-3 hidden group-hover:flex ml-[12px]">
+        <div className="w-3 h-3 hidden group-hover:flex ml-[13px]">
           <svg
             viewBox="-0.5 0 8 8"
             version="1.1"
@@ -52,12 +52,12 @@ const TrackTypeSmall = ({ type, item, index }) => {
             </g>
           </svg>
         </div>
-        <span className="text-base  text-[#afb5b5] flex group-hover:hidden">
+        <span className="text-sm  text-[#afb5b5] flex group-hover:hidden">
           {index + 1}
         </span>
 
         <div className="flex flex-col">
-          <h2 className="text-base  text-white hover:underline">
+          <h2 className="text-sm  text-white hover:underline">
             {/* 노래제목 */}
             {item?.name}
           </h2>

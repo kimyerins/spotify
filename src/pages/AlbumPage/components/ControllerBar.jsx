@@ -5,6 +5,14 @@ import RadioButton from "../../../assets/images/RadioButton.svg?react";
 import AddPlayButton from "../../../assets/images/AddPlayButton.svg?react";
 import ViewOptionBox from "./ViewOptionBox";
 import { useAlbumLibrary } from "../../../hooks/useAlbumLibrary";
+import RemoveButton from "../../../assets/images/RemoveButton.svg?react";
+import { usePlayerDevices } from "../../../hooks/Player/usePlayerDevices";
+import {
+  usePlayerState,
+  usePlayTrack,
+  usePauseTrack,
+} from "../../../hooks/Player/usePlayer";
+import { useAlbumTracks } from "../../../hooks/useAlbumTracks";
 
 const ControllerBar = ({ viewOptionBox, id }) => {
   const [isOptionOpen, setIsOptionOpen] = useState(false); // 옵션이 열려있는지 여부
@@ -14,6 +22,8 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     viewOption: viewOption,
     setViewOption: setViewOption,
   };
+
+  const token = localStorage.getItem("spotifyToken");
   const albumId = id; // 실제 앨범 ID로 설정
   const {
     isSaved, // 저장 여부
@@ -22,41 +32,163 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     isRemoving, // 제거 중인지
     saveAlbum, // 앨범 저장 함수
     removeAlbum, // 앨범 삭제 함수
-  } = useAlbumLibrary(albumId);
-  console.log("저장여부", isSaved);
+  } = useAlbumLibrary(token, albumId);
+
+  const { data: deviceId, refetch: refetchDevices } = usePlayerDevices(token);
+  const device_id = deviceId?.devices[0].id;
+  const { data: playerState } = usePlayerState(token); // 현재 플레이어 상태 조회
+  const { mutate: playTrack } = usePlayTrack();
+  // const { mutate: pauseTrack } = usePauseTrack();
+  const pauseTrackMutation = usePauseTrack(token);
+  const { data: trackList } = useAlbumTracks(albumId);
+  console.log("라이브러리 저장여부 : ", isSaved);
+  console.log("디바이스 ID : ", device_id);
+  console.log("재생중? : ", playerState?.is_playing);
+  console.log("트랙리스트 : ", trackList);
+  const trackUris = trackList?.map((track) => `spotify:track:${track.id}`);
+  console.log("트랙ID리스트 : ", trackUris);
+
+  const handlePlay = () => {
+    playTrack({
+      token,
+      uris: trackUris, // 트랙은 노래 한곡인듯
+      deviceData: `${device_id}`, // 실제 장치 ID로 대체
+    });
+  };
+
+  // const handlePause = () => {
+  //   pauseTrack({
+  //     token,
+  //   });
+  // };
+  const handlePlayPause = async () => {
+    console.log("현재 플레이어 상태:", playerState);
+    if (!token) {
+      console.log("토큰 또는 선택된 디바이스가 없습니다.");
+      await refetchDevices();
+      return;
+    }
+
+    try {
+      if (playerState?.is_playing) {
+        // 현재 재생 중이면 일시정지
+        const result = await pauseTrackMutation.mutateAsync({
+          deviceData: device_id,
+        });
+        console.log("일시정지 결과:", result);
+      } else {
+        // 현재 일시정지 상태이면 재생
+        const context = playerState?.context;
+        const currentTrack = playerState?.item;
+        const progress = playerState?.progress_ms || 0;
+        let playParams = {
+          position_ms: progress,
+        };
+
+        if (context && context.uri) {
+          // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
+          playParams.context_uri = context.uri;
+          if (currentTrack && currentTrack.uri) {
+            playParams.offset = { uri: currentTrack.uri };
+          }
+        } else if (currentTrack && currentTrack.uri) {
+          // 단일 트랙인 경우
+          playParams.uris = [currentTrack.uri];
+        } else {
+          console.error("재생할 수 있는 트랙이 없습니다.");
+          return;
+        }
+
+        const playResult = await playTrackMutation.mutateAsync({
+          token,
+          deviceData: device_id,
+          ...playParams,
+        });
+        console.log("재생 시작", {
+          deviceData: device_id,
+          ...playParams,
+        });
+        console.log("재생 결과:", playResult);
+      }
+
+      // 플레이어 상태 갱신
+      setTimeout(() => {
+        refetchPlayerState();
+      }, 500); // 500ms 후에 상태 갱신
+    } catch (error) {
+      console.error("재생/일시정지 중 오류 발생:", error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center ">
       <div className="flex items-center gap-4">
         {/* 재생 버튼 */}
-        <div className="cursor-pointer">
-          <PlayButton
-            width={56}
-            height={56}
-            fill="#1ED760"
-            className=" hover:scale-105 hover:fill-[#3AE276]"
-          />
-        </div>
-        {/* (+) 추가하기 버튼 */}
-        <div className="cursor-pointer ">
-          <svg
-            className="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width={56}
-            height={56}
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+
+        {playerState?.is_playing ? (
+          <div className="cursor-pointer" onClick={handlePlayPause}>
+            <svg
+              className="w-[56px] h-[56px]"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#1ED760"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H8Zm7 0a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        ) : (
+          <div className="cursor-pointer" onClick={handlePlay}>
+            <PlayButton
+              width={56}
+              height={56}
+              fill="#1ED760"
+              className=" hover:scale-105 hover:fill-[#3AE276]"
             />
-          </svg>
-        </div>
+          </div>
+        )}
+
+        {isSaved ? (
+          <div
+            className="cursor-pointer "
+            onClick={() => removeAlbum()} // 앨범 제거
+            disabled={isRemoving}
+          >
+            <RemoveButton
+              color="#3AE276"
+              className={`w-9 h-9 hover:scale-105`}
+            />
+          </div>
+        ) : (
+          <div
+            className="cursor-pointer "
+            onClick={() => saveAlbum()} // 앨범 저장
+            disabled={isSaving}
+          >
+            <svg
+              className="w-9 h-9 text-[#b3b3b3]  hover:text-white hover:scale-[104%] dark:text-white "
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width={56}
+              height={56}
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </div>
+        )}
+
         {/* 옵션 버튼 */}
         <div
           className="cursor-pointer relative"
@@ -233,5 +365,4 @@ const ControllerBar = ({ viewOptionBox, id }) => {
     </div>
   );
 };
-
 export default ControllerBar;

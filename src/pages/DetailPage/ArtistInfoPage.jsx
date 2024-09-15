@@ -3,15 +3,15 @@ import RoundInfoCard from "../../common/InfoCard/RoundInfoCard";
 import SquareInfoCard from "../../common/InfoCard/SquareInfoCard";
 import TrackListCard from "../../common/InfoCard/TrackListCard";
 import { useParams } from "react-router-dom";
-import { useSearchArtists } from "../../hooks/useSearchArtists";
-import {useArtists} from "../../hooks/useArtists.js";
 import {useArtistById} from "../../hooks/useArtistById.jsx";
+import {useArtistsTopTrack} from "../../hooks/useArtistTopTrack.js";
 
 const ArtistInfoPage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { name } = useParams();
   const { data, isLoading, isError } = useArtistById(name);
+  const {data:toptracks} = useArtistsTopTrack(name)
 
   const togglePopup = () => {
     setPopupVisible(!popupVisible);
@@ -20,6 +20,9 @@ const ArtistInfoPage = () => {
   const toggleTrackList = () => {
     setIsExpanded(!isExpanded);
   };
+
+  console.log('artistinfo',data)
+  console.log('toptrackss',toptracks)
 
   const trackListCount = isExpanded ? 10 : 5;
 
@@ -76,8 +79,8 @@ const ArtistInfoPage = () => {
           <div className={"p-4 bg-[#121212]"}>
             <h3 className={"text-2xl font-bold"}>인기</h3>
             <div className={"p-4"}>
-              {[...Array(trackListCount)].map((_, index) => (
-                <TrackListCard key={index} />
+              {toptracks?.slice(0,trackListCount).map((item,index) => (
+                <TrackListCard key={index} item={item} index={index} />
               ))}
               <button onClick={toggleTrackList} className={"p-2 mt-2 text-sm font-bold text-[#b3b3b3] hover:text-[#fff]"}>
                 {isExpanded ? "간단히 보기" : "자세히 보기"}
