@@ -1,11 +1,20 @@
 import React from 'react';
 import {useArtists} from "../../hooks/useArtists.js";
 import Card from "../../common/Card.jsx";
+import {useSelector} from "react-redux";
 
-const Recommend = (item) => {
+const Artists = (item) => {
 
 
-    const {data} = useArtists(item.data)
+    let {data,isLoading} = useArtists(item.data)
+
+    data = useSelector((state)=>state.homepage.artists)
+
+    if(isLoading){return '';}
+
+    if(Object.keys(data).length===0){return '';}
+
+
 
     console.log('item',data);
     return (
@@ -28,4 +37,4 @@ const Recommend = (item) => {
     );
 };
 
-export default Recommend;
+export default Artists;
