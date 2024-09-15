@@ -121,7 +121,7 @@ const PlayerControl = ({ visibleSection, setVisibleSection }) => {
         const playResult = await playTrackMutation.mutateAsync({
           token,
           deviceData: selectedDeviceId,
-          ...playParams,
+          playParams,
         });
         console.log("재생 시작", {
           deviceData: selectedDeviceId,
