@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 
-const TrackTypeSmall = ({ type }) => {
+const TrackTypeSmall = ({ type, item, index }) => {
   // type 종류 : album, artist, playlist
   // 재생중인 노래 스타일 적용 필요
   // 더보기, hover 팝업 효과 만들기
   // 좋아요 표시한 곡인지
-  const [isLike, setisLike] = useState(true);
-
+  const [isLike, setisLike] = useState(false);
+  const minutes = Math.floor((item?.duration_ms / (1000 * 60)) % 60);
+  const seconds = Math.floor((item?.duration_ms / 1000) % 60)
+    .toString()
+    .padStart(2, "0"); // seconds가 1자리일 경우 앞에 0 추가
   return (
-    <div className="group flex items-center justify-between rounded-lg px-4 py-1 cursor-pointer transition duration-300 hover:bg-white/10">
+    <div className="group grid grid-cols-4 gap-4 rounded-lg px-4 py-1 cursor-pointer transition duration-300 hover:bg-white/10  items-center">
       {/* 재생 버튼 or 인덱스 번호 */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 col-span-2">
         <div className="w-3 h-3 hidden group-hover:flex ml-[12px]">
           <svg
             viewBox="-0.5 0 8 8"
@@ -49,35 +52,28 @@ const TrackTypeSmall = ({ type }) => {
             </g>
           </svg>
         </div>
-        <span className="text-base font-bold text-[#afb5b5] flex group-hover:hidden">
-          1
+        <span className="text-base  text-[#afb5b5] flex group-hover:hidden">
+          {index + 1}
         </span>
-        {/* 앨범이미지 */}
 
         <div className="flex flex-col">
-          <h2 className="text-base font-semibold text-white hover:underline">
-            {/* 노래명 */}Song
+          <h2 className="text-base  text-white hover:underline">
+            {/* 노래제목 */}
+            {item?.name}
           </h2>
         </div>
       </div>
 
       {type === "album" ? (
-        <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-          {/* 앨범 아티스트 */}복숭아
+        <p className="col-start-3 text-xs text-gray-300 group-hover:text-white hover:underline">
+          {/* 아티스트명 */}
+          {item?.artists[0]?.name}
         </p>
       ) : (
         ""
       )}
 
-      {type === "artist" ? (
-        <p className="text-sm text-gray-300 group-hover:text-white">
-          {/* 재생수 */}45,233,853
-        </p>
-      ) : (
-        ""
-      )}
-
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4  justify-self-center">
         {/* 추가하기 버튼 */}
         {isLike ? (
           <div className="w-5 h-5 mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -128,7 +124,10 @@ const TrackTypeSmall = ({ type }) => {
           </div>
         )}
 
-        <span className="text-sm text-gray-300 mr-3">{/* 곡 길이 */}2:00</span>
+        <span className="text-sm text-gray-300 mr-3">
+          {/* 곡 길이 */}
+          {`0${minutes}:${seconds}`}
+        </span>
 
         {/* 더보기 버튼 */}
         <div className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -138,7 +137,7 @@ const TrackTypeSmall = ({ type }) => {
             enable-background="new 0 0 32 32"
             id="Glyph"
             version="1.1"
-            xml:space="preserve"
+            xmlSpace="preserve"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             stroke="#ffffff"
