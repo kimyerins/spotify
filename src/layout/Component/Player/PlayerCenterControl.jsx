@@ -45,7 +45,7 @@ const PlayerCenterControl = () => {
     skipToPreviousMutation.mutate({ deviceData });
   };
 
-  const handlePlayPause = useCallback(async () => {
+  const handlePlayPause = async () => {
     console.log("현재 플레이어 상태:", playerState);
     if (!token || !selectedDeviceId) {
       console.log("토큰 또는 선택된 디바이스가 없습니다.");
@@ -57,7 +57,6 @@ const PlayerCenterControl = () => {
       if (playerState?.is_playing) {
         // 현재 재생 중이면 일시정지
         const result = await pauseTrackMutation.mutateAsync({
-          token,
           deviceData: selectedDeviceId,
         });
         console.log("일시정지 결과:", result);
@@ -70,13 +69,13 @@ const PlayerCenterControl = () => {
           position_ms: progress,
         };
 
-        if (context?.uri) {
+        if (context && context.uri) {
           // 컨텍스트(플레이리스트, 앨범 등)가 있는 경우
           playParams.context_uri = context.uri;
-          if (currentTrack?.uri) {
+          if (currentTrack && currentTrack.uri) {
             playParams.offset = { uri: currentTrack.uri };
           }
-        } else if (currentTrack?.uri) {
+        } else if (currentTrack && currentTrack.uri) {
           // 단일 트랙인 경우
           playParams.uris = [currentTrack.uri];
         } else {
@@ -87,26 +86,23 @@ const PlayerCenterControl = () => {
         const playResult = await playTrackMutation.mutateAsync({
           token,
           deviceData: selectedDeviceId,
-          playParams,
+          ...playParams,
         });
-        console.log("재생 시작", playParams);
+        console.log("재생 시작", {
+          deviceData: selectedDeviceId,
+          ...playParams,
+        });
         console.log("재생 결과:", playResult);
       }
 
       // 플레이어 상태 갱신
-      refetchPlayerState();
+      setTimeout(() => {
+        refetchPlayerState();
+      }, 500); // 500ms 후에 상태 갱신
     } catch (error) {
-      console.error("서버 응답:", error.response.data);
+      console.error("재생/일시정지 중 오류 발생:", error);
     }
-  }, [
-    token,
-    selectedDeviceId,
-    playerState,
-    pauseTrackMutation,
-    playTrackMutation,
-    refetchPlayerState,
-    refetchDevices,
-  ]);
+  };
   return (
     <div>
       <div className="control_wrap flex items-center">
@@ -191,15 +187,17 @@ const PlayerCenterControl = () => {
             <path d="M0 4.75A3.75 3.75 0 0 1 3.75 1h8.5A3.75 3.75 0 0 1 16 4.75v5a3.75 3.75 0 0 1-3.75 3.75H9.81l1.018 1.018a.75.75 0 1 1-1.06 1.06L6.939 12.75l2.829-2.828a.75.75 0 1 1 1.06 1.06L9.811 12h2.439a2.25 2.25 0 0 0 2.25-2.25v-5a2.25 2.25 0 0 0-2.25-2.25h-8.5A2.25 2.25 0 0 0 1.5 4.75v5A2.25 2.25 0 0 0 3.75 12H5v1.5H3.75A3.75 3.75 0 0 1 0 9.75v-5z"></path>
           </svg>
         </div>
+      </div>
+      {/* <div className="seek">
         <input
           type="range"
           min="0"
-          max="300000" // 예시로 5분 (300000ms)로 설정
+          max="250000" // 예시로 5분 (300000ms)로 설정
           value={position}
           onChange={handleSeekChange}
           onMouseUp={handleSeek} // 슬라이더를 놓을 때 시크 요청
         />
-      </div>
+      </div> */}
     </div>
   );
 };
