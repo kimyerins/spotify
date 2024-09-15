@@ -1,0 +1,7 @@
+.activeDevice {
+  background: radial-gradient(
+    82.95% 283.44% at 50% -160.29%,
+    rgba(30, 215, 96, 0.3) 0,
+    #181818 100%
+  );
+}

@@ -8,6 +8,5 @@ module.exports = {
   theme: {},
   plugins: [
     require("flowbite/plugin"), // Flowbite 플러그인
-    require("@tailwindcss/line-clamp"),
   ],
 };

@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 
-const TrackTypeList = ({ type }) => {
+const TrackTypeList = ({ type, item, index }) => {
   // type 종류 : album, artist, playlist
   // 재생중인 노래 스타일 적용 필요
   // 더보기, hover 팝업 효과 만들기
   // 좋아요 표시한 곡인지
-  const [isLike, setisLike] = useState(true);
+  const [isLike, setisLike] = useState(false);
+  const minutes = Math.floor((item?.duration_ms / (1000 * 60)) % 60);
+  const seconds = Math.floor((item?.duration_ms / 1000) % 60)
+    .toString()
+    .padStart(2, "0"); // seconds가 1자리일 경우 앞에 0 추가
 
   return (
-    <div className="group flex items-center justify-between rounded-lg p-4 cursor-pointer transition duration-300 hover:bg-white/10">
+    <div className="group grid grid-cols-4 gap-4  items-center  rounded-lg p-4 cursor-pointer transition duration-300 hover:bg-white/10">
       {/* 재생 버튼 or 인덱스 번호 */}
-      <div className="flex items-center space-x-4">
-        <div className="w-3 h-3 hidden group-hover:flex ml-[13px]">
+      <div className="flex items-center space-x-4 col-span-3">
+        <div className="w-3 h-3 hidden group-hover:flex ml-[14px] ">
           <svg
             viewBox="-0.5 0 8 8"
             version="1.1"
@@ -49,50 +53,33 @@ const TrackTypeList = ({ type }) => {
             </g>
           </svg>
         </div>
-        <span className="text-lg font-bold text-[#afb5b5] flex group-hover:hidden">
-          1
+        <span className="text-base font-bold text-[#afb5b5] flex group-hover:hidden">
+          {index + 1}
         </span>
-        {/* 앨범이미지 */}
 
         <div className="flex flex-col">
-          <h2 className="text-base font-semibold text-white hover:underline">
-            {/* 노래명 */}Song
+          <h2 className="text-base  text-white hover:underline">
+            {/* 노래명 */}
+            {item?.name}
           </h2>
-          {type === "album" ? (
-            <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-              {/* 아티스트명 */}아이유
-            </p>
-          ) : (
-            ""
-          )}
+
+          <p className="text-xs text-gray-300 group-hover:text-white hover:underline">
+            {/* 아티스트명 */}
+            {item?.artists[0]?.name}
+          </p>
         </div>
       </div>
 
       {type === "playlist" ? (
         <p className="text-sm text-gray-300 group-hover:text-white hover:underline">
-          {/* 앨범 */}복숭아
+          {/* 앨범 */}
+          {item?.artists?.name}
         </p>
       ) : (
         ""
       )}
 
-      {type === "playlist" ? (
-        <p className="text-sm text-gray-300">
-          {/* 추가한 날짜 */}20nn년 1월 5일
-        </p>
-      ) : (
-        ""
-      )}
-
-      {type === "artist" ? (
-        <p className="text-sm text-gray-300 group-hover:text-white">
-          {/* 재생수 */}45,233,853
-        </p>
-      ) : (
-        ""
-      )}
-
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 col-start-4  justify-self-center">
         {/* 추가하기 버튼 */}
         {isLike ? (
           <div className="w-5 h-5 mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -143,7 +130,10 @@ const TrackTypeList = ({ type }) => {
           </div>
         )}
 
-        <span className="text-sm text-gray-300 mr-3">{/* 곡 길이 */}2:00</span>
+        <span className="text-sm text-gray-300 mr-3">
+          {/* 곡 길이 */}
+          {`0${minutes}:${seconds}`}
+        </span>
 
         {/* 더보기 버튼 */}
         <div className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

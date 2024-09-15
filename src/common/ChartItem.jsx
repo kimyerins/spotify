@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const ChartItem = ({ item, type, index }) => {
     // type 종류 : album, artist, playlist, search
@@ -46,16 +47,20 @@ const ChartItem = ({ item, type, index }) => {
                     className="w-10 h-10 rounded-md mr-3"
                 />
                 <div className='flex flex-col'>
-                    <h2 className="text-base text-white hover:underline">{item.name}</h2>
+                    <Link to={`/detail/track/${item?.id}`}><h2 className="text-base text-white hover:underline">{item.name}</h2></Link>
                     {type === 'album' || type === 'search'
-                        ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.artists[0].name}</p>
+                        ? <Link to={`/detail/artist/${item?.artists[0]?.id}`}>
+                            <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.artists[0].name}</p>
+                        </Link>
                         : ''
                     }
                 </div>
             </div>
 
             {type === 'playlist'
-                ? <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.album.name}</p>
+                ? <Link to={`/detail/album/${item?.album.id}`}>
+                    <p className="text-sm text-gray-300 group-hover:text-white hover:underline">{item.album.name}</p>
+                </Link>
                 : ''
             }
 

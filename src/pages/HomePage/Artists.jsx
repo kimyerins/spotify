@@ -2,10 +2,12 @@ import React from 'react';
 import {useArtists} from "../../hooks/useArtists.js";
 import Card from "../../common/Card.jsx";
 
-const Recommend = (item) => {
+const Artists = (item) => {
 
 
-    const {data} = useArtists(item.data)
+    let {data,isLoading} = useArtists(item.data)
+
+    if(isLoading){return '';}
 
     console.log('item',data);
     return (
@@ -21,6 +23,7 @@ const Recommend = (item) => {
                         subTitle={'아티스트'}
                         imgUrl={item.images[item.images.length-2]?.url}
                         imgShape={'circle'}
+                        url={`detail/artist/${item.id}`}
                     />
                 ))}
             </div>
@@ -28,4 +31,4 @@ const Recommend = (item) => {
     );
 };
 
-export default Recommend;
+export default Artists;

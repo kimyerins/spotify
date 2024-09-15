@@ -5,22 +5,24 @@ import {
   usePlayerQueue,
 } from "../../hooks/Player/userPlayerPlaying";
 import { usePlayerDevices } from "../../hooks/Player/usePlayerDevices";
+import "./PlayerPlayList.style.css";
+import { usePlayerState } from "../../hooks/Player/usePlayer";
 
 const PlayerPlaylist = ({ visibleSection }) => {
   const { token } = useSpotifyToken();
   const playlistQuery = usePlayerPlaying(token);
   const devicesQuery = usePlayerDevices(token);
   const queueQuery = usePlayerQueue(token);
+  const { data: playerState, refetch: refetchPlayerState } =
+    usePlayerState(token);
   const activeDevice = devicesQuery.data?.devices?.find(
     (device) => device.is_active
   );
-  console.log("queueQuery", queueQuery);
-  console.log("devicesQuery", devicesQuery);
-  console.log("activeDevice", activeDevice);
 
   useEffect(() => {
     if (visibleSection === "playlist") {
       playlistQuery.refetch();
+      refetchPlayerState();
     } else if (visibleSection === "device") {
       devicesQuery.refetch();
     }
@@ -39,7 +41,10 @@ const PlayerPlaylist = ({ visibleSection }) => {
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] min-w-[320px] mx-2 bg-[#121212] rounded-[10px] overflow-y-scroll">
+    <div
+      className="h-[calc(100vh-140px)] min-w-[320px] mx-2 bg-[#121212] rounded-[10px] overflow-hidden 
+    hover:overflow-y-auto custom-scrollbar"
+    >
       {visibleSection === "playlist" && (
         <div className="playingBox">
           <div className="tit_wrap px-[16px]">
@@ -63,7 +68,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
             <div className="p-[16px]">
               <h3 className="text-white">현재 재생 중</h3>
               <div className="flex p-[8px] mb-[24px]">
-                <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
+                <div className="imgbox min-w-[48px] min-h-[48px]  max-h-[48px] max-w-[48px] mr-[8px] overflow-hidden">
                   <img
                     className="rounded-[5px]"
                     src={
@@ -86,7 +91,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
               <ul>
                 {queueQuery?.data.queue.slice(0, 12).map((track, index) => (
                   <li key={index} className="text-white flex p-[8px]">
-                    <div className="imgbox min-w-[48px] min-w-[48px]  max-w-[48px] max-w-[48px] mr-[8px]">
+                    <div className="imgbox min-w-[48px] min-h-[48px]  max-w-[48px] max-h-[48px] mr-[8px] overflow-hidden">
                       <img
                         className="rounded-[5px]"
                         src={track?.album?.images?.[0]?.url}
@@ -113,7 +118,7 @@ const PlayerPlaylist = ({ visibleSection }) => {
           {devicesQuery?.data && (
             <div>
               <div className="tit_wrap px-[16px]">
-                <div className="flex justify-between items-center py-[8px]">
+                <div className="flex justify-between items-center py-[8px] h-16">
                   <h3 className="text-white text-[16px] font-bold">
                     기기에 연결하기
                   </h3>
@@ -131,9 +136,53 @@ const PlayerPlaylist = ({ visibleSection }) => {
                   </div>
                 </div>
               </div>
-              <div className="cont_wrap">
-                <h3 className="text-white text-[24px]">현재 기기</h3>
-                <p className="text-white text-[16px]">{activeDevice?.name}</p>
+              <div className="cont_wrap px-[12px]">
+                <div className="activeDevice rounded-lg py-4 px-3 mb-6">
+                  <div className="flex items-center">
+                    <div className="imgbox w-[24x] h-[24px] mr-[8px]">
+                      <img
+                        className="w-[24x] h-[24px]"
+                        src="https://open.spotifycdn.com/cdn/images/device-picker-equaliser-animation.946e7243.webp"
+                        alt="playing"
+                      />
+                    </div>
+                    <h3 className="text-white text-[24px] font-bold">
+                      현재 기기
+                    </h3>
+                  </div>
+                  <p className="text-white text-[16px] font-bold">
+                    {activeDevice?.name}
+                  </p>
+                </div>
+                <h3 className="text-white text-[16px] font-bold px-3">
+                  다른 기기 선택
+                </h3>
+                <ul className="py-2 px-3 list-none">
+                  {devicesQuery.data.devices.map(
+                    (device) =>
+                      device.id !== activeDevice?.id && (
+                        <li
+                          key={device.id}
+                          className="text-white text-[16px] font-bold h-16 items-center flex"
+                        >
+                          <div className="icon mr-3">
+                            <svg
+                              data-encore-id="icon"
+                              role="presentation"
+                              aria-hidden="true"
+                              data-testid="main-icon"
+                              viewBox="0 0 24 24"
+                              className="Svg-sc-ytk21e-0 fhAPQu w-[24x] h-[24px]"
+                              fill={"#fff"}
+                            >
+                              <path d="M0 21a1 1 0 0 1 1-1h22a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1zM3 5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5zm3-1a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6z"></path>
+                            </svg>
+                          </div>
+                          {device.name} {device.is_active ? "(Active)" : ""}
+                        </li>
+                      )
+                  )}
+                </ul>
               </div>
             </div>
           )}
