@@ -80,6 +80,7 @@ const SearchResultCategoryPage = () => {
                                             subTitle={categoryTranslations[category]}
                                             imgUrl={category === 'tracks' ? item.album.images?.[0]?.url : item.images?.[0]?.url}
                                             imgShape={category === 'artists' ? 'circle' : ''}
+                                            url={`detail/${category.slice(0,-1)}/${item.id}`}
                                         />
                                     ))
                                 ) : (
