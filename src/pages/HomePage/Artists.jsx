@@ -23,6 +23,7 @@ const Artists = (item) => {
                         subTitle={'아티스트'}
                         imgUrl={item.images[item.images.length-2]?.url}
                         imgShape={'circle'}
+                        url={`detail/artist/${item.id}`}
                     />
                 ))}
             </div>
